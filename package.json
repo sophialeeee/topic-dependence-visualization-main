@@ -1,0 +1,46 @@
+{
+  "name": "topic-dependence-visualization",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production --config ./config/webpack.config.dev.js",
+    "pack": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wkw307/topic-dependence-visualization.git"
+  },
+  "keywords": [
+    "topic",
+    "dependences",
+    "visualization",
+    "d3"
+  ],
+  "author": "wkw307",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wkw307/topic-dependence-visualization/issues"
+  },
+  "homepage": "https://github.com/wkw307/topic-dependence-visualization#readme",
+  "dependencies": {
+    "@ant-design/colors": "^3.2.2",
+    "axios": "^0.19.0",
+    "d3": "^5.9.2",
+    "lodash": "^4.17.15",
+    "facet-tree-visualization": "github:xjtu-e-learning/facet-tree-visualization#v1.1"
+  },
+  "devDependencies": {
+    "@types/d3": "^5.7.2",
+    "@types/jest": "^24.0.23",
+    "@types/lodash": "^4.14.147",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
+    "eslint": "^6.4.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.6.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.12"
+  }
+}

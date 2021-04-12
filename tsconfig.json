@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "removeComments": true,
+    "module": "commonjs",
+    "target": "es5",
+    "types": ["lodash", "d3", "jest"],
+    "sourceMap": true,
+    "outDir": "dst",
+    "lib": [
+      "es5",
+      "es6",
+      "dom",
+      "es2015.collection"
+    ]
+  },
+  "include": [
+    "src/*", "data.ts", "node_modules/facet-tree-visualization/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
