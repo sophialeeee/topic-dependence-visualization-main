@@ -4,7 +4,6 @@ node_modules
 *.DS_Store
 .idea
 package-lock.json
-module/*
 src/**/*.js
 dist/*
 server/**/*.js
