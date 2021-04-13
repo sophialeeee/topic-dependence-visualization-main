@@ -61,6 +61,22 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
+
+
+    function fucCheckLength(strTemp) {
+        var i, sum;
+        sum = 0;
+        for (i = 0; i < strTemp.length; i++) {
+            if ((strTemp.charCodeAt(i) >= 0) && (strTemp.charCodeAt(i) <= 255)) {
+                sum = sum + 1;
+            } else {
+                sum = sum + 2;
+            }
+        }
+        return sum;
+    }
+
+
     console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
@@ -81,7 +97,7 @@ export async function drawMap(
         .attr("markerWidth", "6")
         .attr("markerHeight", "6")
         .attr("viewBox", "0 0 12 12")
-        .attr("refX", "6")
+        .attr("refX", "8.5")
         .attr("refY", "6")
         .attr("orient", "auto");
     const arrow_path = "M2,2 L10,6 L2,10 L6,6 L2,2";
@@ -201,16 +217,27 @@ export async function drawMap(
             })
             .attr('y', d => d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]))
             .text(d => {
-                if (topics[d.id].length > 6){
-                    var xx = topics[d.id].substr(0,6);
-                    xx += '...';
-                    console.log("ss",xx);
-                    return xx;
-                }
-                else {
-                    console.log("bubianhua");
-                    return topics[d.id];
-                }})
+                if (topics[d.id])
+                {
+                    if (fucCheckLength(topics[d.id]) > 8)
+                    {
+                        var strLen=topics[d.id].length;
+                        var newStr = "";
+                        for(var i=0;i<=strLen;i++){
+                            var tmpStr = topics[d.id].substr(0,i);
+                            if(fucCheckLength(tmpStr)>8){
+                                newStr += '...';
+                                break;
+                            } else {
+                                newStr = tmpStr;
+                        }}
+                        return newStr;
+
+                    }
+                    else {
+                        return topics[d.id];
+                    }}
+                })
             .attr('fill', '#ffffff')
             .attr('cursor', 'pointer');
         canvas.append('g')
@@ -397,17 +424,26 @@ export async function drawMap(
             .attr('y', d => d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]))
             .text(d => {
                 if (topics[d.id])
-                {if (topics[d.id].length > 3){
-                    var xx = topics[d.id].substr(0,3);
-                    xx += '...';
-                    console.log("ss",xx);
-                    return xx;
-                }
-                else {
-                    console.log("bubianhua");
-                    return topics[d.id];
-                }}
-            })
+                {
+                    if (fucCheckLength(topics[d.id]) > 8)
+                    {
+                        var strLen=topics[d.id].length;
+                        var newStr = "";
+                        for(var i=0;i<=strLen;i++){
+                            var tmpStr = topics[d.id].substr(0,i);
+                            if(fucCheckLength(tmpStr)>8){
+                                newStr += '...';
+                                break;
+                            } else {
+                                newStr = tmpStr;
+                        }}
+                        return newStr;
+
+                    }
+                    else {
+                        return topics[d.id];
+                    }}
+                })
             .attr('fill', '#ffffff')
             .attr('cursor', 'pointer');
             canvas.append('g')
@@ -658,17 +694,26 @@ export async function drawMap(
                 //.text(d => topics[d.id])
                 .text(d => {
                     if (topics[d.id])
-                    {if (topics[d.id].length > 3){
-                        var xx = topics[d.id].substr(0,3);
-                        xx += '...';
-                        console.log("ss",xx);
-                        return xx;
-                    }
-                    else {
-                        console.log("bubianhua");
-                        return topics[d.id];
-                    }}
-                })
+                    {
+                        if (fucCheckLength(topics[d.id]) > 8)
+                        {
+                            var strLen=topics[d.id].length;
+                            var newStr = "";
+                            for(var i=0;i<=strLen;i++){
+                                var tmpStr = topics[d.id].substr(0,i);
+                                if(fucCheckLength(tmpStr)>8){
+                                    newStr += '...';
+                                    break;
+                                } else {
+                                    newStr = tmpStr;
+                            }}
+                            return newStr;
+
+                        }
+                        else {
+                            return topics[d.id];
+                        }}
+                    })
                 .attr('fill', '#ffffff')
                 .attr('display', 'inline');
         }
@@ -805,17 +850,26 @@ export async function drawMap(
                 //.text(d => topics[d.id])
                 .text(d => {
                     if (topics[d.id])
-                    {if (topics[d.id].length > 3){
-                        var xx = topics[d.id].substr(0,3);
-                        xx += '...';
-                        console.log("ss",xx);
-                        return xx;
-                    }
-                    else {
-                        console.log("bubianhua");
-                        return topics[d.id];
-                    }}
-                })
+                    {
+                        if (fucCheckLength(topics[d.id]) > 8)
+                        {
+                            var strLen=topics[d.id].length;
+                            var newStr = "";
+                            for(var i=0;i<=strLen;i++){
+                                var tmpStr = topics[d.id].substr(0,i);
+                                if(fucCheckLength(tmpStr)>8){
+                                    newStr += '...';
+                                    break;
+                                } else {
+                                    newStr = tmpStr;
+                            }}
+                            return newStr;
+
+                        }
+                        else {
+                            return topics[d.id];
+                        }}
+                    })
                 .attr('fill', '#ffffff')
                 .attr('display', 'inline');
         }
@@ -983,20 +1037,30 @@ export async function drawMap(
                             return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
                         }
                     })
-                    //.text(d => topics[d.id])
+
+
                     .text(d => {
                         if (topics[d.id])
-                        {if (topics[d.id].length > 3){
-                            var xx = topics[d.id].substr(0,3);
-                            xx += '...';
-                            console.log("ss",xx);
-                            return xx;
-                        }
-                        else {
-                            console.log("bubianhua");
-                            return topics[d.id];
-                        }}
-                    })
+                        {
+                            if (fucCheckLength(topics[d.id]) > 8)
+                            {
+                                var strLen=topics[d.id].length;
+                                var newStr = "";
+                                for(var i=0;i<=strLen;i++){
+                                    var tmpStr = topics[d.id].substr(0,i);
+                                    if(fucCheckLength(tmpStr)>8){
+                                        newStr += '...';
+                                        break;
+                                    } else {
+                                        newStr = tmpStr;
+                                }}
+                                return newStr;
+
+                            }
+                            else {
+                                return topics[d.id];
+                            }}
+                        })
                     .attr('fill', '#ffffff')
                     .attr('display', 'inline');
                     
@@ -1221,17 +1285,26 @@ export async function drawMap(
                     //.text(d => topics[d.id])
                     .text(d => {
                         if (topics[d.id])
-                        {if (topics[d.id].length > 3){
-                            var xx = topics[d.id].substr(0,3);
-                            xx += '...';
-                            console.log("ss",xx);
-                            return xx;
-                        }
-                        else {
-                            console.log("bubianhua");
-                            return topics[d.id];
-                        }}
-                    })
+                        {
+                            if (fucCheckLength(topics[d.id]) > 8)
+                            {
+                                var strLen=topics[d.id].length;
+                                var newStr = "";
+                                for(var i=0;i<=strLen;i++){
+                                    var tmpStr = topics[d.id].substr(0,i);
+                                    if(fucCheckLength(tmpStr)>8){
+                                        newStr += '...';
+                                        break;
+                                    } else {
+                                        newStr = tmpStr;
+                                }}
+                                return newStr;
+
+                            }
+                            else {
+                                return topics[d.id];
+                            }}
+                        })
                     .attr('fill', '#ffffff')
                     .attr('display', d => d.id === id ? 'none' : 'inline');
 
@@ -1241,6 +1314,7 @@ export async function drawMap(
                 treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
                 treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3 - 24) + 'px';
                 treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4 - 24) + 'px';
+
                 treeSvg.style.visibility = 'visible';
                 if (id !== -1 && topics[id]) {
                     axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
@@ -1344,8 +1418,8 @@ export function judgementStringLengthWithChinese(str: string): number {
         }
      }
 }
-    if (result>3){
-        return 4;
+    if (result>4){
+        return 5;
     }
     else{
     return result;
