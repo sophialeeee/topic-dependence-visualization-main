@@ -786,7 +786,8 @@ export async function drawMap(
                 return d.cy + d.r + 24;
             })
             .attr('font-size', 14)
-            .attr('display', 'inline');
+            .attr('display', 'inline')
+            .text(d =>topics[sequences[d.id][0]]);
         for (let com of nodes) {
             const tmp = calcCircleLayoutWithoutReduceCrossing(
                 { x: com.cx, y: com.cy },
@@ -960,7 +961,28 @@ export async function drawMap(
                     }
                     return tmp;
                 }
-            });
+            })
+            .text(d => {
+                if(topics[sequences[d.id][0]]){
+                    if (fucCheckLength(topics[sequences[d.id][0]]) > 10)
+                    {
+                        var strLen=topics[sequences[d.id][0]].length;
+                        var newStr = "";
+                        for(var i=0;i<=strLen;i++){
+                            var tmpStr = topics[sequences[d.id][0]].substr(0,i);
+                            if(fucCheckLength(tmpStr)>8){
+                                newStr += '...';
+                                break;
+                            } else {
+                                newStr = tmpStr;
+                        }}
+                        return newStr;
+
+                    }
+                    else {
+                        return topics[sequences[d.id][0]];
+                    }}}
+                );
         // 保存二级焦点知识簇内节点坐标
         let nodeInCom = {};
         for (let com of nodes) {
@@ -999,7 +1021,7 @@ export async function drawMap(
                     .attr('cy', d => d.cy)
                     .attr('id', d => d.id)
                     .attr('display', 'inline');
-                    //buzhidaozheli
+                    
                     
                 const edgeElement = document.getElementById(com.id + 'edges');
                 d3.select(edgeElement)
@@ -1408,7 +1430,7 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
-    console.log("str",str);
+    //console.log("str",str);
     if (str){
     for (let i = 0; i < str.length; i++) {
         if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
