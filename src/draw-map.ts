@@ -185,10 +185,11 @@ export async function drawMap(
         .style('padding-top', '5px')
         .text("添加新主题")
         .on('click', function(){
+            console.log('click in topic ')
             if(inputNewTopic.node().value){
                 // console.log("This is ", inputNewTopic.node().value);
-                insertTopic();
-
+                console.log('insert callback start')
+                insertTopic(inputNewTopic.node().value);
             };
         });
         d3.select(document.getElementById('ListMenu'))
