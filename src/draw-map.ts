@@ -186,7 +186,9 @@ export async function drawMap(
         .text("添加新主题")
         .on('click', function(){
             if(inputNewTopic.node().value){
-                console.log("This is ", inputNewTopic.node().value);
+                // console.log("This is ", inputNewTopic.node().value);
+                insertTopic();
+
             };
         });
         d3.select(document.getElementById('ListMenu'))
@@ -807,10 +809,6 @@ export async function drawMap(
                 OptionDelete.onclick = function (){
                     deleteTopic(d)
                 };
-                // OptionAdd.onclick = function (){
-
-                //     console.log("Add Successfully!")
-                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -853,13 +851,7 @@ export async function drawMap(
                 OptionDelete.onclick = function (){
                     deleteTopic(d.id);
                 };
-                OptionAdd.onclick = function (){
-                    insertTopic(d.id);
-                };
-                // OptionAdd.onclick = function (){
 
-                //     console.log("Add Successfully!")
-                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
