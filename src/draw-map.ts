@@ -1786,7 +1786,6 @@ export function judgementStringLengthWithChinese(str: string): number {
         return result;
     }
 }
-}
 
 export function completeObj(obj) {
     let ids = new Set();
