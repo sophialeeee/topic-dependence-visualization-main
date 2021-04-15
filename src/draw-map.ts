@@ -295,7 +295,7 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
+    const radius = svg.clientWidth / 2 ;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
@@ -1727,8 +1727,8 @@ export async function drawMap(
                     const r = 0.4 * com.r * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
                     treeSvg.style.width = (2 * com.r - 4 * r) / 5 * 3 + 'px';
                     treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
-                    treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3 - 24) + 'px';
-                    treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4 - 24) + 'px';
+                    treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
+                    treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
 
                     treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
