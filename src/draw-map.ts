@@ -129,26 +129,15 @@ export async function drawMap(
             // .append('p')
             .style('padding-top', '5px')
             .text("删除该主题");
-        d3.select(document.getElementById('ListMenu'))
-            .append('div')
-            .attr('id', 'OptionAdd')
-            .style('height', '25px')
-            .on('mouseover', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
-            })
-            .on('mouseout', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
-            })
-            // .style('background', 'red')
-            // .append('p')
-            .style('padding-top', '5px')
-            .text("添加新主题");
+        // d3.select(document.getElementById('ListMenu'))
+        //     .append('foreignObject')
+        //     .attr('height', '20px')
+        //     .attr('class', 'input')
+        //     .append("xhtml:form")
+        //     // .html(function() {console.log('nothing happend'); return 'nothing'})
+        //     .append('input')
+        //     .attr('value', function() {console.log('nothing again'); return 'nothing again'})
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
@@ -169,11 +158,40 @@ export async function drawMap(
             // .append('p')
             .style('padding-top', '5px')
             .text("选定该主题");
+        const inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        .append('input')
+        .attr('id', 'inputNewTopic')
+        .attr('value', '')
+        .attr('style', 'margin-top: 5px; margin-bottom: 5px; height: 18px; width: 140px')
+        .attr('opacity', 0.2);
+        d3.select(document.getElementById('ListMenu'))
+        .append('div')
+        .attr('id', 'OptionAdd')
+        .style('height', '25px')
+        .on('mouseover', function(){
+            d3.select(document.getElementById('OptionAdd'))
+            .transition()
+            .duration(300)
+            .style("background", optionSelectedColor);
+        })
+        .on('mouseout', function(){
+            d3.select(document.getElementById('OptionAdd'))
+            .transition()
+            .duration(300)
+            .style("background", optionColor);
+        })
+        .style('padding-top', '5px')
+        .text("添加新主题")
+        .on('click', function(){
+            if(inputNewTopic.node().value){
+                console.log("This is ", inputNewTopic.node().value);
+            };
+        });
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CloseMenu')
             .style('height', '25px')
-            .style('margin-top', '40px')
+            .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('CloseMenu'))
                 .transition()
@@ -805,10 +823,10 @@ export async function drawMap(
                     // DeleteTopic(d.id);
                     console.log("Delete Successfully!", d);
                 };
-                OptionAdd.onclick = function (){
+                // OptionAdd.onclick = function (){
 
-                    console.log("Add Successfully!")
-                };
+                //     console.log("Add Successfully!")
+                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -819,8 +837,8 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
-                    // .style("left", (optionSpacex.animVal.value + 20) + 'px')
-                    // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
+                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // console.log((document.getElementById('inputNewTopic')));
                 }
 
             });
@@ -852,10 +870,10 @@ export async function drawMap(
                     // DeleteTopic(d.id);
                     console.log("Delete Successfully!", d);
                 };
-                OptionAdd.onclick = function (){
+                // OptionAdd.onclick = function (){
 
-                    console.log("Add Successfully!")
-                };
+                //     console.log("Add Successfully!")
+                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -866,6 +884,7 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
+                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // .style("left", (optionSpacex.animVal.value + 20) + 'px')
                     // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
                 }
