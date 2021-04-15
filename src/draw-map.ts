@@ -17,6 +17,7 @@ const colors = [];
 var selectNow = '';
 var optionNow = '';
 const optionColor = '#7B7B7B';
+const optionSelectedColor = '#ADADAD';
 const optionStrokeColor = '#3C3C3C';
 for (let key in presetPalettes) {
     colors.push(presetPalettes[key].slice(0, 10));
@@ -37,9 +38,9 @@ export interface MapData {
 //画线的代码，用来生成d3画线需要的数据
 export const link: any = d3.line()
     // @ts-ignore
-    .x(function (d) {return d.x})
+    .x(function (d) {    return d.x  })
     // @ts-ignore
-    .y(function (d) {return d.y})
+    .y(function (d) { return d.y })
     .curve(d3.curveCatmullRom.alpha(0.5));
 
 export async function drawMap(
@@ -84,9 +85,9 @@ export async function drawMap(
     }
 
 
-    if (!document.getElementById('listMenu')) {
+    if (!document.getElementById('ListMenu')) {
         d3.select('body').append('div')
-            .attr('id', 'listMenu')
+            .attr('id', 'ListMenu')
             .style('position', 'absolute')
             .style('opacity', 0)
             .style('text-align', 'center')
@@ -98,93 +99,102 @@ export async function drawMap(
             .style('height', '200px')
             .style('background', optionColor)
             // .style('border-color', 'red')
-            .style('border-radius', '8px')
-            // .attr('x', d => d.cx)
-            // .attr('y', d => d.cy)
-            // .attr('id', d => d.id + 'optionlist')
-            // .attr('fill', optionColor)
-            // .attr('stroke', optionStrokeColor)
-            // .selectAll('div')
+            .style('border-radius', '6px')
 
+        d3.select(document.getElementById('ListMenu'))
+            .append('div')
+            .attr('id', 'CompleteName')
+            .style('height', '20px')
+            .style('padding-top', '5px')
+            ;
 
-
-            // .style('margin-left', 200)
-            // .style('margin-top', );
-        d3.select(document.getElementById('listMenu'))
+        d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionDelete')
+            .style('height', '25px')
+            .style('margin-top', '5px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionDelete'))
                 .transition()
-                .duration(500)
-                .style("background", '#ADADAD');
+                .duration(300)
+                .style("background", optionSelectedColor);
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionDelete'))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .style("background", optionColor);
             })
             // .style('background', 'green')
-            .append('p')
+            // .append('p')
+            .style('padding-top', '5px')
             .text("删除该主题");
-        d3.select(document.getElementById('listMenu'))
+        d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAdd')
+            .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionAdd'))
                 .transition()
-                .duration(500)
-                .style("background", '#ADADAD');
+                .duration(300)
+                .style("background", optionSelectedColor);
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionAdd'))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .style("background", optionColor);
             })
             // .style('background', 'red')
-            .append('p')
+            // .append('p')
+            .style('padding-top', '5px')
             .text("添加新主题");
-        d3.select(document.getElementById('listMenu'))
+        d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
+            .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionSelect'))
                 .transition()
-                .duration(500)
-                .style("background", '#ADADAD');
+                .duration(300)
+                .style("background", optionSelectedColor);
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionSelect'))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .style("background", optionColor);
             })
             // .style('background', 'blue')
-            .append('p')
+            // .append('p')
+            .style('padding-top', '5px')
             .text("选定该主题");
-        d3.select(document.getElementById('listMenu'))
+        d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CloseMenu')
-            .style('margin-top', '90px')
+            .style('height', '25px')
+            .style('margin-top', '40px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('CloseMenu'))
                 .transition()
-                .duration(500)
-                .style("background", '#ADADAD');
+                .duration(300)
+                .style("background", optionSelectedColor);
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('CloseMenu'))
                 .transition()
-                .duration(500)
+                .duration(300)
                 .style("background", optionColor);
             })
             // .style('background', 'blue')
-            .append('p')
-            .text("关闭菜单");
+            // .append('p')
+            .style('padding-top', '5px')
+            .text("\u2715 关闭菜单");
     }
-    console.log("mapData", mapData);
+
+
+
+    console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
     //用来显示画簇的认知关系，鼠标附上去会显示簇
@@ -197,7 +207,7 @@ export async function drawMap(
         .style('padding', '1px 3px')
         .style('top', 0);
 
-    // const listMenu = d3.select('body').append('div')
+    // const ListMenu = d3.select('body').append('div')
     //     .style('position', 'flow')
     //     .style('opacity', 0)
     //     .style('text-align', 'center')
@@ -497,6 +507,13 @@ export async function drawMap(
                 .attr('cy', d => d.cy)
                 .attr('id', d => d.id)
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
+                .on('mouseover', function() {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                })
             // .on('contextmenu', d => {
             //     d3.event.preventDefault();
             //     const divTooltip = document.getElementById('facet-tree-tooltip');
@@ -675,7 +692,14 @@ export async function drawMap(
                     }
                 })
                 .attr('fill', '#ffffff')
-                .attr('cursor', 'pointer');
+                .attr('cursor', 'pointer')
+                .on('mouseover', function() {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                });
             canvas.append('g')
                 .attr('id', com.id + 'edges')
                 .selectAll('path')
@@ -745,25 +769,27 @@ export async function drawMap(
                 d3.event.preventDefault();
 
                 selectNow = d.id;
-                const optionSpacex = document.getElementById(selectNow)['cx'];
-                const optionSpacey = document.getElementById(selectNow)['cy'];
-                const listMenu = document.getElementById('listMenu');
 
-                d3.select(listMenu)
+                const ListMenu = document.getElementById('ListMenu');
+
+                d3.select(ListMenu)
                     .transition()
                     // .duration(500)
                     .style("opacity", .9)
-                    .style("left", (optionSpacex.animVal.value + 20) + 'px')
-                    .style("top", (optionSpacey.animVal.value + 20)+ 'px');
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAdd = document.getElementById('OptionAdd');
                 const OptionSelect = document.getElementById('OptionSelect');
                 const CloseMenu = document.getElementById('CloseMenu');
+                d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    console.log("Delete Successfully!")
+                    // DeleteTopic(d.id);
+                    console.log("Delete Successfully!", d);
                 };
                 OptionAdd.onclick = function (){
+
                     console.log("Add Successfully!")
                 };
                 OptionSelect.onclick = function (){
@@ -771,7 +797,8 @@ export async function drawMap(
                 };
                 CloseMenu.onclick = function (){
                     console.log('Close Menu!');
-                    d3.select(listMenu)
+                    selectNow = '';
+                    d3.select(ListMenu)
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
@@ -789,25 +816,27 @@ export async function drawMap(
                 d3.event.preventDefault();
 
                 selectNow = d.id;
-                const optionSpacex = document.getElementById(selectNow)['cx'];
-                const optionSpacey = document.getElementById(selectNow)['cy'];
-                const listMenu = document.getElementById('listMenu');
 
-                d3.select(listMenu)
+                const ListMenu = document.getElementById('ListMenu');
+
+                d3.select(ListMenu)
                     .transition()
                     // .duration(500)
                     .style("opacity", .9)
-                    .style("left", (optionSpacex.animVal.value + 20) + 'px')
-                    .style("top", (optionSpacey.animVal.value + 20)+ 'px');
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAdd = document.getElementById('OptionAdd');
                 const OptionSelect = document.getElementById('OptionSelect');
                 const CloseMenu = document.getElementById('CloseMenu');
+                d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    console.log("Delete Successfully!")
+                    // DeleteTopic(d.id);
+                    console.log("Delete Successfully!", d);
                 };
                 OptionAdd.onclick = function (){
+
                     console.log("Add Successfully!")
                 };
                 OptionSelect.onclick = function (){
@@ -815,7 +844,8 @@ export async function drawMap(
                 };
                 CloseMenu.onclick = function (){
                     console.log('Close Menu!');
-                    d3.select(listMenu)
+                    selectNow = '';
+                    d3.select(ListMenu)
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
@@ -1718,13 +1748,14 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
-    //console.log("str",str);
-    if (str){
-    for (let i = 0; i < str.length; i++) {
-        if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
-            result += 0.5;
-        } else {
-            result += 1;
+    console.log("str", str);
+    if (str) {
+        for (let i = 0; i < str.length; i++) {
+            if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
+                result += 0.5;
+            } else {
+                result += 1;
+            }
         }
     }
     if (result > 4) {
