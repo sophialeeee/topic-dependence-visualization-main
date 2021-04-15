@@ -37,13 +37,9 @@ export interface MapData {
 //画线的代码，用来生成d3画线需要的数据
 export const link: any = d3.line()
     // @ts-ignore
-    .x(function (d) {
-        return d.x
-    })
+    .x(function (d) {return d.x})
     // @ts-ignore
-    .y(function (d) {
-        return d.y
-    })
+    .y(function (d) {return d.y})
     .curve(d3.curveCatmullRom.alpha(0.5));
 
 export async function drawMap(
@@ -1722,14 +1718,13 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
-    console.log("str", str);
-    if (str) {
-        for (let i = 0; i < str.length; i++) {
-            if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
-                result += 0.5;
-            } else {
-                result += 1;
-            }
+    //console.log("str",str);
+    if (str){
+    for (let i = 0; i < str.length; i++) {
+        if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
+            result += 0.5;
+        } else {
+            result += 1;
         }
     }
     if (result > 4) {

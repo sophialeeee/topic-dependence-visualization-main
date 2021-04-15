@@ -19,7 +19,7 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
     })
     .catch(e => console.log(e));
 
-
+//drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet);
 
 async function clickFacet(facetId: number) {
 
