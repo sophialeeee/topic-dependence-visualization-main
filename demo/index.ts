@@ -5,7 +5,7 @@ import {drawMap} from "../src/draw-map";
 import {gaozhongshuxue} from "../gaozhongshuxue";
 // import {drawTree} from './module/facetTree';
 
-const domainName = '数据结构';
+const domainName = '数据库应用';
 // const learningPath = [-1,104882,104890,104894,104898,104941];
 const learningPath = [];
 const treesvg = document.getElementById('tree');
@@ -20,7 +20,7 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
     })
     .catch(e => console.log(e));
 
-// drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet);
+//drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet);
 
 async function clickFacet(facetId: number) {
 
