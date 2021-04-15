@@ -158,12 +158,12 @@ export async function drawMap(
             // .append('p')
             .style('padding-top', '5px')
             .text("选定该主题");
-        var inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        const inputNewTopic = d3.select(document.getElementById('ListMenu'))
         .append('input')
+        .attr('id', 'inputNewTopic')
         .attr('value', '')
         .attr('style', 'margin-top: 5px; margin-bottom: 5px; height: 18px; width: 140px')
-        .attr('opacity', 0.2)
-        ;
+        .attr('opacity', 0.2);
         d3.select(document.getElementById('ListMenu'))
         .append('div')
         .attr('id', 'OptionAdd')
@@ -820,8 +820,8 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
-                    // .style("left", (optionSpacex.animVal.value + 20) + 'px')
-                    // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
+                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // console.log((document.getElementById('inputNewTopic')));
                 }
 
             });
@@ -867,6 +867,7 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
+                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // .style("left", (optionSpacex.animVal.value + 20) + 'px')
                     // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
                 }
