@@ -529,13 +529,30 @@ export async function drawMap(
                 .attr('cy', d => d.cy)
                 .attr('id', d => d.id)
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
-                .on('mouseover', function() {
+                .on('mouseover', function(d) {
+
+                    
                     if (selectNow === ''){
                         d3.select(document.getElementById('ListMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
+                    const divTooltip = document.getElementById('facet-tree-tooltip');
+                    d3.select(divTooltip)
+                        .transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    d3.select(divTooltip).html(topics[d.id])
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
                 })
+                
+                .on("mouseout", function (d) {
+                    const divTooltip = document.getElementById('facet-tree-tooltip');
+                    d3.select(divTooltip).transition().transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                });
             // .on('contextmenu', d => {
             //     d3.event.preventDefault();
             //     const divTooltip = document.getElementById('facet-tree-tooltip');
