@@ -131,26 +131,15 @@ export async function drawMap(
             // .append('p')
             .style('padding-top', '5px')
             .text("删除该主题");
-        d3.select(document.getElementById('ListMenu'))
-            .append('div')
-            .attr('id', 'OptionAdd')
-            .style('height', '25px')
-            .on('mouseover', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
-            })
-            .on('mouseout', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
-            })
-            // .style('background', 'red')
-            // .append('p')
-            .style('padding-top', '5px')
-            .text("添加新主题");
+        // d3.select(document.getElementById('ListMenu'))
+        //     .append('foreignObject')
+        //     .attr('height', '20px')
+        //     .attr('class', 'input')
+        //     .append("xhtml:form")
+        //     // .html(function() {console.log('nothing happend'); return 'nothing'})
+        //     .append('input')
+        //     .attr('value', function() {console.log('nothing again'); return 'nothing again'})
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
@@ -171,11 +160,40 @@ export async function drawMap(
             // .append('p')
             .style('padding-top', '5px')
             .text("选定该主题");
+        var inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        .append('input')
+        .attr('value', '')
+        .attr('style', 'margin-top: 5px; margin-bottom: 5px; height: 18px; width: 140px')
+        .attr('opacity', 0.2)
+        ;
+        d3.select(document.getElementById('ListMenu'))
+        .append('div')
+        .attr('id', 'OptionAdd')
+        .style('height', '25px')
+        .on('mouseover', function(){
+            d3.select(document.getElementById('OptionAdd'))
+            .transition()
+            .duration(300)
+            .style("background", optionSelectedColor);
+        })
+        .on('mouseout', function(){
+            d3.select(document.getElementById('OptionAdd'))
+            .transition()
+            .duration(300)
+            .style("background", optionColor);
+        })
+        .style('padding-top', '5px')
+        .text("添加新主题")
+        .on('click', function(){
+            if(inputNewTopic.node().value){
+                console.log("This is ", inputNewTopic.node().value);
+            };
+        });
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CloseMenu')
             .style('height', '25px')
-            .style('margin-top', '40px')
+            .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('CloseMenu'))
                 .transition()
@@ -789,9 +807,10 @@ export async function drawMap(
                 OptionDelete.onclick = function (){
                     deleteTopic(d)
                 };
-                OptionAdd.onclick = function (){
-                    insertTopic(d)
-                };
+                // OptionAdd.onclick = function (){
+
+                //     console.log("Add Successfully!")
+                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -837,6 +856,10 @@ export async function drawMap(
                 OptionAdd.onclick = function (){
                     insertTopic(d.id);
                 };
+                // OptionAdd.onclick = function (){
+
+                //     console.log("Add Successfully!")
+                // };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
