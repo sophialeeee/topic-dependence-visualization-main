@@ -38,13 +38,9 @@ export interface MapData {
 //画线的代码，用来生成d3画线需要的数据
 export const link: any = d3.line()
     // @ts-ignore
-    .x(function (d) {
-        return d.x
-    })
+    .x(function (d) {    return d.x  })
     // @ts-ignore
-    .y(function (d) {
-        return d.y
-    })
+    .y(function (d) { return d.y })
     .curve(d3.curveCatmullRom.alpha(0.5));
 
 export async function drawMap(
@@ -195,18 +191,6 @@ export async function drawMap(
     }
 
 
-    function fucCheckLength(strTemp) {
-        var i, sum;
-        sum = 0;
-        for (i = 0; i < strTemp.length; i++) {
-            if ((strTemp.charCodeAt(i) >= 0) && (strTemp.charCodeAt(i) <= 255)) {
-                sum = sum + 1;
-            } else {
-                sum = sum + 2;
-            }
-        }
-        return sum;
-    }
 
     console.log("mapData",mapData);
     let layer = 0;
@@ -521,6 +505,13 @@ export async function drawMap(
                 .attr('cy', d => d.cy)
                 .attr('id', d => d.id)
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
+                .on('mouseover', function() {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                })
             // .on('contextmenu', d => {
             //     d3.event.preventDefault();
             //     const divTooltip = document.getElementById('facet-tree-tooltip');
@@ -699,7 +690,14 @@ export async function drawMap(
                     }
                 })
                 .attr('fill', '#ffffff')
-                .attr('cursor', 'pointer');
+                .attr('cursor', 'pointer')
+                .on('mouseover', function() {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                });
             canvas.append('g')
                 .attr('id', com.id + 'edges')
                 .selectAll('path')
