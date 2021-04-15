@@ -4,7 +4,7 @@ import {drawMap} from "../src/draw-map";
 import {gaozhongshuxue} from "../gaozhongshuxue";
 // import {drawTree} from './module/facetTree';
 
-const domainName = 'JAVA';
+const domainName = '数据结构';
 // const learningPath = [-1,104882,104890,104894,104898,104941];
 const learningPath = [];
 const treesvg = document.getElementById('tree');
