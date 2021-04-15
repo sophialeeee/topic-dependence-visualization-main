@@ -69,6 +69,8 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
+
+
     function fucCheckLength(strTemp) {
         var i, sum;
         sum = 0;
@@ -98,7 +100,7 @@ export async function drawMap(
             .style('background', optionColor)
             // .style('border-color', 'red')
             .style('border-radius', '6px')
-        
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
@@ -794,7 +796,7 @@ export async function drawMap(
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
-                
+
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAdd = document.getElementById('OptionAdd');
                 const OptionSelect = document.getElementById('OptionSelect');
@@ -818,6 +820,8 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
+                    // .style("left", (optionSpacex.animVal.value + 20) + 'px')
+                    // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
                 }
 
             });
@@ -839,7 +843,7 @@ export async function drawMap(
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
-                
+
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAdd = document.getElementById('OptionAdd');
                 const OptionSelect = document.getElementById('OptionSelect');
@@ -863,6 +867,8 @@ export async function drawMap(
                     .transition().transition()
                     .duration(500)
                     .style("opacity", 0);
+                    // .style("left", (optionSpacex.animVal.value + 20) + 'px')
+                    // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
                 }
 
             });
@@ -1137,7 +1143,8 @@ export async function drawMap(
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
-                .attr('display', 'inline');
+                .attr('display', 'inline')
+                .text(d =>topics[sequences[d.id][0]]);
             for (let com of nodes) {
                 const tmp = calcCircleLayoutWithoutReduceCrossing(
                     {x: com.cx, y: com.cy},
@@ -1310,7 +1317,28 @@ export async function drawMap(
                         }
                         return tmp;
                     }
-                });
+                })
+                .text(d => {
+                    if(topics[sequences[d.id][0]]){
+                        if (fucCheckLength(topics[sequences[d.id][0]]) > 10)
+                        {
+                            var strLen=topics[sequences[d.id][0]].length;
+                            var newStr = "";
+                            for(var i=0;i<=strLen;i++){
+                                var tmpStr = topics[sequences[d.id][0]].substr(0,i);
+                                if(fucCheckLength(tmpStr)>8){
+                                    newStr += '...';
+                                    break;
+                                } else {
+                                    newStr = tmpStr;
+                            }}
+                            return newStr;
+    
+                        }
+                        else {
+                            return topics[sequences[d.id][0]];
+                        }}}
+                    );
             // 保存二级焦点知识簇内节点坐标
             let nodeInCom = {};
             for (let com of nodes) {
@@ -1603,7 +1631,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', d => d.id === id ? 'none' : 'inline');
-                    //buzhidao
+              
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
                         .selectAll('path')
