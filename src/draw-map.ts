@@ -96,10 +96,11 @@ export async function drawMap(
             // .style('background-color', 'gray')
             .style('padding', '5px 3px')
             .style('width', '150px')
-            .style('height', '200px')
+            .style('height', '215px')
             .style('background', optionColor)
             // .style('border-color', 'red')
             .style('border-radius', '6px')
+
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -137,7 +138,26 @@ export async function drawMap(
         //     // .html(function() {console.log('nothing happend'); return 'nothing'})
         //     .append('input')
         //     .attr('value', function() {console.log('nothing again'); return 'nothing again'})
-
+        d3.select(document.getElementById('ListMenu'))
+            .append('div')
+            .attr('id', 'OptionAssemble')
+            .style('height', '25px')
+            .on('mouseover', function(){
+                d3.select(document.getElementById('OptionAssemble'))
+                .transition()
+                .duration(300)
+                .style("background", optionSelectedColor);
+            })
+            .on('mouseout', function(){
+                d3.select(document.getElementById('OptionAssemble'))
+                .transition()
+                .duration(300)
+                .style("background", optionColor);
+            })
+            // .style('background', 'blue')
+            // .append('p')
+            .style('padding-top', '5px')
+            .text("装配该主题");
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
@@ -191,7 +211,7 @@ export async function drawMap(
             .append('div')
             .attr('id', 'CloseMenu')
             .style('height', '25px')
-            .style('margin-top', '15px')
+            // .style('margin-top', '5px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('CloseMenu'))
                 .transition()
@@ -798,7 +818,7 @@ export async function drawMap(
                     .style("top", (d3.event.pageY + 20)+ 'px');
 
                 const OptionDelete = document.getElementById('OptionDelete');
-                const OptionAdd = document.getElementById('OptionAdd');
+                const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
                 const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
@@ -806,10 +826,9 @@ export async function drawMap(
                     // DeleteTopic(d.id);
                     console.log("Delete Successfully!", d);
                 };
-                // OptionAdd.onclick = function (){
-
-                //     console.log("Add Successfully!")
-                // };
+                OptionAssemble.onclick = function (){
+                    console.log("Assemble Successfully!")
+                };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -823,7 +842,6 @@ export async function drawMap(
                     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // console.log((document.getElementById('inputNewTopic')));
                 }
-
             });
 
             const tElement = document.getElementById(com.id + 'text');
@@ -845,7 +863,7 @@ export async function drawMap(
                     .style("top", (d3.event.pageY + 20)+ 'px');
 
                 const OptionDelete = document.getElementById('OptionDelete');
-                const OptionAdd = document.getElementById('OptionAdd');
+                const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
                 const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
@@ -853,10 +871,9 @@ export async function drawMap(
                     // DeleteTopic(d.id);
                     console.log("Delete Successfully!", d);
                 };
-                // OptionAdd.onclick = function (){
-
-                //     console.log("Add Successfully!")
-                // };
+                OptionAssemble.onclick = function (){
+                    console.log("Assemble Successfully!")
+                };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
@@ -868,10 +885,8 @@ export async function drawMap(
                     .duration(500)
                     .style("opacity", 0);
                     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
-                    // .style("left", (optionSpacex.animVal.value + 20) + 'px')
-                    // .style("top", (optionSpacey.animVal.value + 20)+ 'px');
+                    // console.log((document.getElementById('inputNewTopic')));
                 }
-
             });
         }
         // 下面这个是点击整个大圆时的交互
