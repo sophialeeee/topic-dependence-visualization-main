@@ -51,6 +51,8 @@ export async function drawMap(
     learningPath: number[] = [],//这个是后期用到的，也不用传
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
+    insertTopic,
+    deleteTopic,
 ) {
     let {
         topics,
@@ -785,12 +787,10 @@ export async function drawMap(
                 const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    deleteTopic(d)
                 };
                 OptionAdd.onclick = function (){
-
-                    console.log("Add Successfully!")
+                    insertTopic(d)
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
@@ -832,12 +832,10 @@ export async function drawMap(
                 const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    deleteTopic(d.id);
                 };
                 OptionAdd.onclick = function (){
-
-                    console.log("Add Successfully!")
+                    insertTopic(d.id);
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")

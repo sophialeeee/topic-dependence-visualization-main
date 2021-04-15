@@ -7,3 +7,6 @@ package-lock.json
 src/**/*.js
 dist/*
 server/**/*.js
+node_modules.zip
+module/topicDependenceVisualization.js
+module/facetTree.js
