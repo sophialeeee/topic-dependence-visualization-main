@@ -96,8 +96,8 @@ export async function drawMap(
             .style('font-size', '12px')
             .style('color', 'white')
             .style('padding', '5px 3px')
-            .style('width', '150px')
-            .style('height', '215px')
+            .style('width', '130px')
+            .style('height', '180px')
             .style('background', optionColor)
             .style('border-radius', '6px');
 
@@ -112,7 +112,7 @@ export async function drawMap(
             .append('div')
             .attr('id', 'OptionDelete')
             .style('height', '25px')
-            .style('margin-top', '5px')
+            .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionDelete'))
                 .transition()
@@ -162,16 +162,14 @@ export async function drawMap(
                 .duration(300)
                 .style("background", optionColor);
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
             .text("添加依赖关系");
-        const inputNewTopic = d3.select(document.getElementById('ListMenu'))
-            .append('input')
-            .attr('id', 'inputNewTopic')
-            .attr('value', '')
-            .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
-            .attr('opacity', 0.2);
+        // const inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        //     .append('input')
+        //     .attr('id', 'inputNewTopic')
+        //     .attr('value', '')
+        //     .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
+        //     .attr('opacity', 0.2);
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAdd')
@@ -191,12 +189,7 @@ export async function drawMap(
             .style('padding-top', '5px')
             .text("添加新主题")
             .on('click', function(){
-            console.log('click in topic ')
-                if(inputNewTopic.node().value){
-                // console.log("This is ", inputNewTopic.node().value);
-                console.log('insert callback start')
-                insertTopic(inputNewTopic.node().value);
-                };
+                console.log("函数你来补充");
             });
         // d3.select(document.getElementById('ListMenu'))
         //     .append('div')
@@ -222,7 +215,6 @@ export async function drawMap(
         //     .style('padding-top', '5px')
         //     .text("\u2715 关闭菜单");
     }
-
 
 
     console.log("mapData",mapData);
@@ -845,6 +837,8 @@ export async function drawMap(
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
+
+
                 // CloseMenu.onclick = function (){
                 //     console.log('Close Menu!');
                 //     selectNow = '';
