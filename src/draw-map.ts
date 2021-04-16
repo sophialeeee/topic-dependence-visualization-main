@@ -95,21 +95,18 @@ export async function drawMap(
             .style('text-align', 'center')
             .style('font-size', '12px')
             .style('color', 'white')
-            // .style('background-color', 'gray')
             .style('padding', '5px 3px')
             .style('width', '150px')
             .style('height', '215px')
             .style('background', optionColor)
-            // .style('border-color', 'red')
-            .style('border-radius', '6px')
+            .style('border-radius', '6px');
 
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
             .style('height', '20px')
-            .style('padding-top', '5px')
-            ;
+            .style('padding-top', '10px');
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -128,18 +125,9 @@ export async function drawMap(
                 .duration(300)
                 .style("background", optionColor);
             })
-            // .style('background', 'green')
-            // .append('p')
             .style('padding-top', '5px')
             .text("删除该主题");
-        // d3.select(document.getElementById('ListMenu'))
-        //     .append('foreignObject')
-        //     .attr('height', '20px')
-        //     .attr('class', 'input')
-        //     .append("xhtml:form")
-        //     // .html(function() {console.log('nothing happend'); return 'nothing'})
-        //     .append('input')
-        //     .attr('value', function() {console.log('nothing again'); return 'nothing again'})
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAssemble')
@@ -156,8 +144,6 @@ export async function drawMap(
                 .duration(300)
                 .style("background", optionColor);
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
             .text("装配该主题");
         d3.select(document.getElementById('ListMenu'))
@@ -179,60 +165,62 @@ export async function drawMap(
             // .style('background', 'blue')
             // .append('p')
             .style('padding-top', '5px')
-            .text("选定该主题");
+            .text("添加依赖关系");
         const inputNewTopic = d3.select(document.getElementById('ListMenu'))
-        .append('input')
-        .attr('id', 'inputNewTopic')
-        .attr('value', '')
-        .attr('style', 'margin-top: 5px; margin-bottom: 5px; height: 18px; width: 140px')
-        .attr('opacity', 0.2);
-        d3.select(document.getElementById('ListMenu'))
-        .append('div')
-        .attr('id', 'OptionAdd')
-        .style('height', '25px')
-        .on('mouseover', function(){
-            d3.select(document.getElementById('OptionAdd'))
-            .transition()
-            .duration(300)
-            .style("background", optionSelectedColor);
-        })
-        .on('mouseout', function(){
-            d3.select(document.getElementById('OptionAdd'))
-            .transition()
-            .duration(300)
-            .style("background", optionColor);
-        })
-        .style('padding-top', '5px')
-        .text("添加新主题")
-        .on('click', function(){
-            console.log('click in topic ')
-            if(inputNewTopic.node().value){
-                // console.log("This is ", inputNewTopic.node().value);
-                console.log('insert callback start')
-                insertTopic(inputNewTopic.node().value);
-            };
-        });
+            .append('input')
+            .attr('id', 'inputNewTopic')
+            .attr('value', '')
+            .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
+            .attr('opacity', 0.2);
         d3.select(document.getElementById('ListMenu'))
             .append('div')
-            .attr('id', 'CloseMenu')
+            .attr('id', 'OptionAdd')
             .style('height', '25px')
-            // .style('margin-top', '5px')
             .on('mouseover', function(){
-                d3.select(document.getElementById('CloseMenu'))
+                d3.select(document.getElementById('OptionAdd'))
                 .transition()
                 .duration(300)
                 .style("background", optionSelectedColor);
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('CloseMenu'))
+                d3.select(document.getElementById('OptionAdd'))
                 .transition()
                 .duration(300)
                 .style("background", optionColor);
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
-            .text("\u2715 关闭菜单");
+            .text("添加新主题")
+            .on('click', function(){
+            console.log('click in topic ')
+                if(inputNewTopic.node().value){
+                // console.log("This is ", inputNewTopic.node().value);
+                console.log('insert callback start')
+                insertTopic(inputNewTopic.node().value);
+                };
+            });
+        // d3.select(document.getElementById('ListMenu'))
+        //     .append('div')
+        //     .attr('id', 'CloseMenu')
+        //     .style('height', '25px')
+        //     // .style('margin-top', '5px')
+        //     .on('mouseover', function(){
+        //         optionNow = 'yes';
+        //         d3.select(document.getElementById('CloseMenu'))
+        //         .transition()
+        //         .duration(300)
+        //         .style("background", optionSelectedColor);
+        //     })
+        //     .on('mouseout', function(){
+        //         optionNow = '';
+        //         d3.select(document.getElementById('CloseMenu'))
+        //         .transition()
+        //         .duration(300)
+        //         .style("background", optionColor);
+        //     })
+        //     // .style('background', 'blue')
+        //     // .append('p')
+        //     .style('padding-top', '5px')
+        //     .text("\u2715 关闭菜单");
     }
 
 
@@ -240,6 +228,17 @@ export async function drawMap(
     console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
+
+    canvas.on('click', function (){
+        console.log('Close Menu!');
+        selectNow = '';
+        d3.select(document.getElementById("ListMenu"))
+        .transition().transition()
+        .duration(500)
+        .style("opacity", 0);
+        (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+        // console.log((document.getElementById('inputNewTopic')));
+    });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
     const divTooltip = d3.select('body').append('div')
         .style('position', 'absolute')
@@ -250,14 +249,6 @@ export async function drawMap(
         .style('padding', '1px 3px')
         .style('top', 0);
 
-    // const ListMenu = d3.select('body').append('div')
-    //     .style('position', 'flow')
-    //     .style('opacity', 0)
-    //     .style('text-align', 'center')
-    //     .style('font-size', '12px')
-    //     .style('background-color', 'gray')
-    //     .style('padding', '2px 3px')
-    //     .style('top', 0);
 
     //用来画箭头，设置箭头模板，是用Id来控制的
     const defs = canvas.append("defs");
@@ -295,7 +286,7 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    const radius = svg.clientWidth / 2 ;
+    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
@@ -837,12 +828,13 @@ export async function drawMap(
                     // .duration(500)
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
-                const CloseMenu = document.getElementById('CloseMenu');
+                // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
                     deleteTopic(d)
@@ -853,17 +845,15 @@ export async function drawMap(
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
-                CloseMenu.onclick = function (){
-                    console.log('Close Menu!');
-                    selectNow = '';
-                    d3.select(ListMenu)
-                    .transition().transition()
-                    .duration(500)
-                    .style("opacity", 0);
-                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
-                    // console.log((document.getElementById('inputNewTopic')));
-                }
-
+                // CloseMenu.onclick = function (){
+                //     console.log('Close Menu!');
+                //     selectNow = '';
+                //     d3.select(ListMenu)
+                //     .transition().transition()
+                //     .duration(500)
+                //     .style("opacity", 0);
+                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                // };
             });
 
             const tElement = document.getElementById(com.id + 'text');
@@ -882,12 +872,13 @@ export async function drawMap(
                     // .duration(500)
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
-                const CloseMenu = document.getElementById('CloseMenu');
+                // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
                     deleteTopic(d.id);
@@ -898,17 +889,15 @@ export async function drawMap(
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
-                CloseMenu.onclick = function (){
-                    console.log('Close Menu!');
-                    selectNow = '';
-                    d3.select(ListMenu)
-                    .transition().transition()
-                    .duration(500)
-                    .style("opacity", 0);
-                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
-                    // console.log((document.getElementById('inputNewTopic')));
-                }
-
+                // CloseMenu.onclick = function (){
+                //     console.log('Close Menu!');
+                //     selectNow = '';
+                //     d3.select(ListMenu)
+                //     .transition().transition()
+                //     .duration(500)
+                //     .style("opacity", 0);
+                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                // };
             });
         }
         // 下面这个是点击整个大圆时的交互
