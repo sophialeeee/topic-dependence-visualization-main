@@ -51,6 +51,8 @@ export async function drawMap(
     learningPath: number[] = [],//这个是后期用到的，也不用传
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
+    insertTopic,
+    deleteTopic,
 ) {
     let {
         topics,
@@ -94,8 +96,8 @@ export async function drawMap(
             .style('font-size', '12px')
             .style('color', 'white')
             .style('padding', '5px 3px')
-            .style('width', '150px')
-            .style('height', '215px')
+            .style('width', '130px')
+            .style('height', '180px')
             .style('background', optionColor)
             .style('border-radius', '6px');
 
@@ -110,7 +112,7 @@ export async function drawMap(
             .append('div')
             .attr('id', 'OptionDelete')
             .style('height', '25px')
-            .style('margin-top', '5px')
+            .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionDelete'))
                 .transition()
@@ -162,12 +164,12 @@ export async function drawMap(
             })
             .style('padding-top', '5px')
             .text("添加依赖关系");
-        const inputNewTopic = d3.select(document.getElementById('ListMenu'))
-            .append('input')
-            .attr('id', 'inputNewTopic')
-            .attr('value', '')
-            .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
-            .attr('opacity', 0.2);
+        // const inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        //     .append('input')
+        //     .attr('id', 'inputNewTopic')
+        //     .attr('value', '')
+        //     .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
+        //     .attr('opacity', 0.2);
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAdd')
@@ -187,9 +189,7 @@ export async function drawMap(
             .style('padding-top', '5px')
             .text("添加新主题")
             .on('click', function(){
-                if(inputNewTopic.node().value){
-                    console.log("This is ", inputNewTopic.node().value);
-                };
+                console.log("函数你来补充");
             });
         // d3.select(document.getElementById('ListMenu'))
         //     .append('div')
@@ -278,7 +278,7 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
+    const radius = svg.clientWidth / 2 ;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
@@ -829,8 +829,7 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    deleteTopic(d)
                 };
                 OptionAssemble.onclick = function (){
                     console.log("Assemble Successfully!")
@@ -874,8 +873,7 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    deleteTopic(d.id);
                 };
                 OptionAssemble.onclick = function (){
                     console.log("Assemble Successfully!")
@@ -1710,8 +1708,8 @@ export async function drawMap(
                     const r = 0.4 * com.r * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
                     treeSvg.style.width = (2 * com.r - 4 * r) / 5 * 3 + 'px';
                     treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
-                    treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3 - 24) + 'px';
-                    treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4 - 24) + 'px';
+                    treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
+                    treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
 
                     treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
