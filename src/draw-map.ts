@@ -53,6 +53,7 @@ export async function drawMap(
     clickFacet,//点击分面时的回调函数
     insertTopic,
     deleteTopic,
+    assembleTopic //点击装配时的回调函数
 ) {
     let {
         topics,
@@ -832,7 +833,8 @@ export async function drawMap(
                     deleteTopic(d)
                 };
                 OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!")
+                    console.log("Assemble Successfully!");
+                    assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
@@ -878,7 +880,8 @@ export async function drawMap(
                     deleteTopic(d.id);
                 };
                 OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!")
+                    console.log("Assemble Successfully!");
+                    assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
