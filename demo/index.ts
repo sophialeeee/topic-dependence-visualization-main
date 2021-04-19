@@ -20,14 +20,13 @@ const svg = document.getElementById('map');
 //     })
 //     .catch(e => console.log(e));
 
-drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,(name) => {
-
-
+drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,() => {
     console.log('insert callback')
-    console.log(name)
+
 },(id)=>{
-    console.log('delete callback')
     console.log(id)
+    console.log('delete callback')
+
 });
 
 async function clickFacet(facetId: number) {

@@ -189,7 +189,8 @@ export async function drawMap(
             .style('padding-top', '5px')
             .text("添加新主题")
             .on('click', function(){
-                console.log("函数你来补充");
+                console.log("insert callback start");
+                insertTopic();
             });
         // d3.select(document.getElementById('ListMenu'))
         //     .append('div')
@@ -213,7 +214,7 @@ export async function drawMap(
         //     // .style('background', 'blue')
         //     // .append('p')
         //     .style('padding-top', '5px')
-        //     .text("\u2715 关闭菜单");
+        //     .text("\u2715 关闭菜单s");
     }
 
 
@@ -535,7 +536,7 @@ export async function drawMap(
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
                 .on('mouseover', function(d) {
 
-                    
+
                     if (selectNow === ''){
                         d3.select(document.getElementById('ListMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
@@ -550,7 +551,7 @@ export async function drawMap(
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
                 })
-                
+
                 .on("mouseout", function (d) {
                     const divTooltip = document.getElementById('facet-tree-tooltip');
                     d3.select(divTooltip).transition().transition()
@@ -829,7 +830,9 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    deleteTopic(d)
+                    console.log(topics[d.id])
+                    console.log(d)
+                    deleteTopic(topics[d.id])
                 };
                 OptionAssemble.onclick = function (){
                     console.log("Assemble Successfully!")
@@ -875,6 +878,8 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
+                    console.log(topics[d.id])
+                    console.log(d)
                     deleteTopic(d.id);
                 };
                 OptionAssemble.onclick = function (){
@@ -975,8 +980,8 @@ export async function drawMap(
                 radius,
                 communityRelation,
                 topicId2Community[-1] !== undefined ? topicId2Community[-1] : undefined
-            
-            
+
+
             );
             // 使用d3画知识簇
             canvas.select('#com')
@@ -1014,7 +1019,7 @@ export async function drawMap(
                     com.r,
                     graph[com.id],
                     com.id === topicId2Community[-1] ? -1 : undefined
-                
+
                 );
                 for (let node of tmp.nodes) {
                     nodePositions[node.id] = node;
@@ -1354,7 +1359,7 @@ export async function drawMap(
                                     newStr = tmpStr;
                             }}
                             return newStr;
-    
+
                         }
                         else {
                             return topics[sequences[d.id][0]];
@@ -1652,7 +1657,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', d => d.id === id ? 'none' : 'inline');
-              
+
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
                         .selectAll('path')
