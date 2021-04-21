@@ -13,21 +13,27 @@ const treesvg = document.getElementById('tree');
 const svg = document.getElementById('map');
 
 
-// axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
-//     .then(res => {
-//         console.log("rs",res.data);
-//         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet);
-//     })
-//     .catch(e => console.log(e));
+axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+    .then(res => {
+        console.log("rs",res.data);
+        drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
-drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,() => {
-    console.log('insert callback')
+        },()=>{
 
-},(id)=>{
-    console.log(id)
-    console.log('delete callback')
+        },()=>{
 
-});
+        },);
+    })
+    .catch(e => console.log(e));
+
+// drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,() => {
+//     console.log('insert callback')
+
+// },(id)=>{
+//     console.log(id)
+//     console.log('delete callback')
+
+// });
 
 async function clickFacet(facetId: number) {
 
