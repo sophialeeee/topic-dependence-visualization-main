@@ -87,6 +87,24 @@ export async function drawMap(
         return sum;
     }
 
+    function checkCloseMenu(occasion) {
+        if (occasion === 1) {
+            var selectTemp = selectNow;
+            setTimeout(function() {
+                if (!optionNow && selectTemp === selectNow){
+                    
+                    d3.select(document.getElementById("ListMenu"))
+                        .transition().transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                    selectNow = '';
+                    // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
+                    //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // }
+                }
+            }, 3000);
+        };
+    }
 
     if (!document.getElementById('ListMenu')) {
         d3.select('body').append('div')
@@ -100,14 +118,27 @@ export async function drawMap(
             .style('width', '130px')
             .style('height', '180px')
             .style('background', optionColor)
-            .style('border-radius', '6px');
+            .style('border-radius', '6px')
+            .on('mouseover', function() {
+                optionNow = 'yes';
+            })
+            .on('mouseout', function() {
+                optionNow = '';
+                checkCloseMenu(1);
+            });
 
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
             .style('height', '20px')
-            .style('padding-top', '10px');
+            .style('padding-top', '10px')
+            .on('mouseover', function() {
+                optionNow = 'yes';
+            })
+            .on('mouseout', function() {
+                // checkCloseMenu();
+            });
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -116,16 +147,20 @@ export async function drawMap(
             .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionDelete'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
+
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionDelete'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
+            
             .style('padding-top', '5px')
             .text("删除该主题");
 
@@ -135,15 +170,17 @@ export async function drawMap(
             .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionAssemble'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionAssemble'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
             .style('padding-top', '5px')
             .text("装配该主题");
@@ -153,15 +190,17 @@ export async function drawMap(
             .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionSelect'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionSelect'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
             .style('padding-top', '5px')
             .text("添加依赖关系");
@@ -177,15 +216,17 @@ export async function drawMap(
             .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionAdd'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
             .style('padding-top', '5px')
             .text("添加新主题")
@@ -223,14 +264,16 @@ export async function drawMap(
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
 
-    canvas.on('click', function (){
+    canvas
+    .on('click', function (){
         console.log('Close Menu!');
         selectNow = '';
         d3.select(document.getElementById("ListMenu"))
-        .transition().transition()
-        .duration(500)
-        .style("opacity", 0);
+            .transition().transition()
+            .duration(500)
+            .style("opacity", 0);
         (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+        optionNow = '';
         // console.log((document.getElementById('inputNewTopic')));
     });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
@@ -536,8 +579,6 @@ export async function drawMap(
                 .attr('id', d => d.id)
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
                 .on('mouseover', function(d) {
-
-
                     if (selectNow === ''){
                         d3.select(document.getElementById('ListMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
@@ -552,12 +593,12 @@ export async function drawMap(
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
                 })
-
                 .on("mouseout", function (d) {
                     const divTooltip = document.getElementById('facet-tree-tooltip');
                     d3.select(divTooltip).transition().transition()
                         .duration(500)
                         .style("opacity", 0);
+                    // checkCloseMenu(2);
                 });
             // .on('contextmenu', d => {
             //     d3.event.preventDefault();
@@ -744,6 +785,9 @@ export async function drawMap(
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
+                })
+                .on('mouseout', function() {
+                    // checkCloseMenu(2);
                 });
             canvas.append('g')
                 .attr('id', com.id + 'edges')
@@ -843,6 +887,8 @@ export async function drawMap(
                     console.log("Select Successfully!")
                 };
 
+                checkCloseMenu(1);
+
 
                 // CloseMenu.onclick = function (){
                 //     console.log('Close Menu!');
@@ -891,6 +937,8 @@ export async function drawMap(
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
+
+                checkCloseMenu(1);
                 // CloseMenu.onclick = function (){
                 //     console.log('Close Menu!');
                 //     selectNow = '';
