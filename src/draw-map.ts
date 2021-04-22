@@ -14,6 +14,10 @@ import {
 import {geoCircle} from 'd3';
 
 const colors = [];
+
+var useTopicEdit = 'yes';
+var useRelationEdit = 'yes';
+
 var selectNow = '';
 var optionNow = '';
 var selectPathNow = '';
@@ -54,9 +58,9 @@ export async function drawMap(
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
     deleteTopic,
-    assembleTopic //点击装配时的回调函数
+    assembleTopic, //点击装配时的回调函数
     selectTopic ,//点击装配时的回调函数
-    insertTopic
+    insertTopic,
     clickPath//点击依赖时回调
 ) {
     let {
@@ -126,7 +130,7 @@ export async function drawMap(
         };
     }
 
-    if (!document.getElementById('ListMenu')) {
+    if (!document.getElementById('ListMenu') && useTopicEdit === 'yes') {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
             .style('position', 'absolute')
@@ -278,7 +282,7 @@ export async function drawMap(
         //     .style('padding-top', '5px')
         //     .text("\u2715 关闭菜单s");
     }
-    if (!document.getElementById('PathMenu')) {
+    if (!document.getElementById('PathMenu') && useRelationEdit === 'yes') {
         d3.select('body').append('div')
             .attr('id', 'PathMenu')
             .style('position', 'absolute')
@@ -350,7 +354,7 @@ export async function drawMap(
             .transition().transition()
             .duration(500)
             .style("opacity", 0);
-        (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+        // (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
         optionNow = '';
         // console.log((document.getElementById('inputNewTopic')));
     });
@@ -530,20 +534,20 @@ export async function drawMap(
             .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
             .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
             .on('mouseover', function(){
-                d3.select(this)
-                .transition()
-                .attr('stroke-width', 5);
+                // d3.select(this)
+                // .transition()
+                // .attr('stroke-width', 5);
                 if (selectPathNow === ''){
                     d3.select(document.getElementById('PathMenu'))
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 }
             })
-            .on('mouseout', function(){
-                d3.select(this)
-                .transition()
-                .attr('stroke-width', 2);
-            })
+            // .on('mouseout', function(){
+            //     d3.select(this)
+            //     .transition()
+            //     .attr('stroke-width', 2);
+            // })
             .on('contextmenu', (d: any) => {
                 d3.event.preventDefault();
                 // console.log("This is PathMenu Test!", d.start)
@@ -922,20 +926,20 @@ export async function drawMap(
                 .attr('marker-end', 'url(#arrow' + globalSequence.indexOf(com.id) + ')')
                 .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                 .on('mouseover', function(){
-                    d3.select(this)
-                    .transition()
-                    .attr('stroke-width', 5);
+                    // d3.select(this)
+                    // .transition()
+                    // .attr('stroke-width', 5);
                     if (selectPathNow === ''){
                         d3.select(document.getElementById('PathMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
                 })
-                .on('mouseout', function(){
-                    d3.select(this)
-                    .transition()
-                    .attr('stroke-width', 2);
-                })
+                // .on('mouseout', function(){
+                //     d3.select(this)
+                //     .transition()
+                //     .attr('stroke-width', 2);
+                // })
                 .on('contextmenu', (d: any) => {
                     d3.event.preventDefault();
                     // console.log("This is PathMenu Test!", d.start)

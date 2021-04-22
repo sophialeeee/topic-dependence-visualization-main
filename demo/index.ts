@@ -28,10 +28,7 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
 },()=>{
     console.log('assemble callback')
 
-},(a,b)=>{
-    console.log('select callback')
-
-});
+})});
 
 async function clickFacet(facetId: number) {
 
@@ -91,5 +88,4 @@ async function clickFacet(facetId: number) {
         console.log(e);
         document.getElementById('assembleNumber').innerHTML = '';
     }
-
 }
