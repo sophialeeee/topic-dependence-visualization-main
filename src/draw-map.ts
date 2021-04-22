@@ -16,6 +16,8 @@ import {geoCircle} from 'd3';
 const colors = [];
 var selectNow = '';
 var optionNow = '';
+var selectPathNow = '';
+var optionPathNow = '';
 const optionColor = '#7B7B7B';
 const optionSelectedColor = '#ADADAD';
 const optionStrokeColor = '#3C3C3C';
@@ -51,6 +53,9 @@ export async function drawMap(
     learningPath: number[] = [],//这个是后期用到的，也不用传
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
+    insertTopic,
+    deleteTopic,
+    assembleTopic //点击装配时的回调函数
 ) {
     let {
         topics,
@@ -84,6 +89,40 @@ export async function drawMap(
         return sum;
     }
 
+    function checkCloseMenu(occasion) {
+        if (occasion === 1) {
+            var selectTemp = selectNow;
+            setTimeout(function() {
+                if (!optionNow && selectTemp === selectNow){
+                    
+                    d3.select(document.getElementById("ListMenu"))
+                        .transition().transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                    selectNow = '';
+                    // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
+                    //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // }
+                }
+            }, 3000);
+        };
+        if (occasion === 2) {
+            var selectTemp = selectPathNow;
+            setTimeout(function() {
+                if (!optionPathNow && selectTemp === selectPathNow){
+                    
+                    d3.select(document.getElementById("PathMenu"))
+                        .transition().transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                    selectPathNow = '';
+                    // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
+                    //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // }
+                }
+            }, 3000);
+        };
+    }
 
     if (!document.getElementById('ListMenu')) {
         d3.select('body').append('div')
@@ -93,69 +132,74 @@ export async function drawMap(
             .style('text-align', 'center')
             .style('font-size', '12px')
             .style('color', 'white')
-            // .style('background-color', 'gray')
             .style('padding', '5px 3px')
-            .style('width', '150px')
-            .style('height', '215px')
+            .style('width', '130px')
+            .style('height', '180px')
             .style('background', optionColor)
-            // .style('border-color', 'red')
             .style('border-radius', '6px')
+            .on('mouseover', function() {
+                optionNow = 'yes';
+            })
+            .on('mouseout', function() {
+                optionNow = '';
+                checkCloseMenu(1);
+            });
 
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
             .style('height', '20px')
-            .style('padding-top', '5px')
-            ;
+            .style('padding-top', '10px')
+            .on('mouseover', function() {
+                optionNow = 'yes';
+            })
+            .on('mouseout', function() {
+                // checkCloseMenu();
+            });
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionDelete')
             .style('height', '25px')
-            .style('margin-top', '5px')
+            .style('margin-top', '15px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionDelete'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
+
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionDelete'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
-            // .style('background', 'green')
-            // .append('p')
+            
             .style('padding-top', '5px')
             .text("删除该主题");
-        // d3.select(document.getElementById('ListMenu'))
-        //     .append('foreignObject')
-        //     .attr('height', '20px')
-        //     .attr('class', 'input')
-        //     .append("xhtml:form")
-        //     // .html(function() {console.log('nothing happend'); return 'nothing'})
-        //     .append('input')
-        //     .attr('value', function() {console.log('nothing again'); return 'nothing again'})
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAssemble')
             .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionAssemble'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionAssemble'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
             .text("装配该主题");
         d3.select(document.getElementById('ListMenu'))
@@ -164,77 +208,150 @@ export async function drawMap(
             .style('height', '25px')
             .on('mouseover', function(){
                 d3.select(document.getElementById('OptionSelect'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
                 d3.select(document.getElementById('OptionSelect'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
-            .text("选定该主题");
-        const inputNewTopic = d3.select(document.getElementById('ListMenu'))
-        .append('input')
-        .attr('id', 'inputNewTopic')
-        .attr('value', '')
-        .attr('style', 'margin-top: 5px; margin-bottom: 5px; height: 18px; width: 140px')
-        .attr('opacity', 0.2);
-        d3.select(document.getElementById('ListMenu'))
-        .append('div')
-        .attr('id', 'OptionAdd')
-        .style('height', '25px')
-        .on('mouseover', function(){
-            d3.select(document.getElementById('OptionAdd'))
-            .transition()
-            .duration(300)
-            .style("background", optionSelectedColor);
-        })
-        .on('mouseout', function(){
-            d3.select(document.getElementById('OptionAdd'))
-            .transition()
-            .duration(300)
-            .style("background", optionColor);
-        })
-        .style('padding-top', '5px')
-        .text("添加新主题")
-        .on('click', function(){
-            if(inputNewTopic.node().value){
-                console.log("This is ", inputNewTopic.node().value);
-            };
-        });
+            .text("添加依赖关系");
+        // const inputNewTopic = d3.select(document.getElementById('ListMenu'))
+        //     .append('input')
+        //     .attr('id', 'inputNewTopic')
+        //     .attr('value', '')
+        //     .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
+        //     .attr('opacity', 0.2);
         d3.select(document.getElementById('ListMenu'))
             .append('div')
-            .attr('id', 'CloseMenu')
+            .attr('id', 'OptionAdd')
             .style('height', '25px')
-            // .style('margin-top', '5px')
             .on('mouseover', function(){
-                d3.select(document.getElementById('CloseMenu'))
-                .transition()
-                .duration(300)
-                .style("background", optionSelectedColor);
+                d3.select(document.getElementById('OptionAdd'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionNow = 'yes';
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('CloseMenu'))
-                .transition()
-                .duration(300)
-                .style("background", optionColor);
+                d3.select(document.getElementById('OptionAdd'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
             })
-            // .style('background', 'blue')
-            // .append('p')
             .style('padding-top', '5px')
-            .text("\u2715 关闭菜单");
+            .text("添加新主题")
+            .on('click', function(){
+                console.log("insert callback start");
+                insertTopic();
+            });
+        // d3.select(document.getElementById('ListMenu'))
+        //     .append('div')
+        //     .attr('id', 'CloseMenu')
+        //     .style('height', '25px')
+        //     // .style('margin-top', '5px')
+        //     .on('mouseover', function(){
+        //         optionNow = 'yes';
+        //         d3.select(document.getElementById('CloseMenu'))
+        //         .transition()
+        //         .duration(300)
+        //         .style("background", optionSelectedColor);
+        //     })
+        //     .on('mouseout', function(){
+        //         optionNow = '';
+        //         d3.select(document.getElementById('CloseMenu'))
+        //         .transition()
+        //         .duration(300)
+        //         .style("background", optionColor);
+        //     })
+        //     // .style('background', 'blue')
+        //     // .append('p')
+        //     .style('padding-top', '5px')
+        //     .text("\u2715 关闭菜单s");
     }
+    if (!document.getElementById('PathMenu')) {
+        d3.select('body').append('div')
+            .attr('id', 'PathMenu')
+            .style('position', 'absolute')
+            .style('opacity', 0)
+            .style('text-align', 'center')
+            .style('font-size', '12px')
+            .style('color', 'white')
+            .style('padding', '5px 3px')
+            .style('width', '120px')
+            .style('height', '110px')
+            .style('background', optionColor)
+            .style('border-radius', '6px')
+            .on('mouseover', function() {
+                optionPathNow = 'yes';
+            })
+            .on('mouseout', function() {
+                optionPathNow = '';
+                checkCloseMenu(2);
+            });
 
+
+        d3.select(document.getElementById('PathMenu'))
+            .append('div')
+            .attr('id', 'CompleteRelation')
+            .style('height', '50px')
+            .style('padding-top', '10px')
+            .on('mouseover', function() {
+                optionPathNow = 'yes';
+            })
+            .on('mouseout', function() {
+                // checkCloseMenu();
+            });
+
+        d3.select(document.getElementById('PathMenu'))
+            .append('div')
+            .attr('id', 'PathDelete')
+            .style('height', '25px')
+            .style('margin-top', '15px')
+            .on('mouseover', function(){
+                d3.select(document.getElementById('PathDelete'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionPathNow = 'yes';
+
+            })
+            .on('mouseout', function(){
+                d3.select(document.getElementById('PathDelete'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
+            })
+            
+            .style('padding-top', '5px')
+            .text("删除该认知关系");
+    }
 
 
     console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
+
+    canvas
+    .on('click', function (){
+        console.log('Close Menu!');
+        selectNow = '';
+        d3.select(document.getElementById("ListMenu"))
+            .transition().transition()
+            .duration(500)
+            .style("opacity", 0);
+        (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+        optionNow = '';
+        // console.log((document.getElementById('inputNewTopic')));
+    });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
     const divTooltip = d3.select('body').append('div')
         .style('position', 'absolute')
@@ -245,14 +362,6 @@ export async function drawMap(
         .style('padding', '1px 3px')
         .style('top', 0);
 
-    // const ListMenu = d3.select('body').append('div')
-    //     .style('position', 'flow')
-    //     .style('opacity', 0)
-    //     .style('text-align', 'center')
-    //     .style('font-size', '12px')
-    //     .style('background-color', 'gray')
-    //     .style('padding', '2px 3px')
-    //     .style('top', 0);
 
     //用来画箭头，设置箭头模板，是用Id来控制的
     const defs = canvas.append("defs");
@@ -290,7 +399,7 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    const radius = svg.clientWidth / 2 ;
+    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
@@ -414,8 +523,42 @@ export async function drawMap(
             .attr('stroke', colors[globalSequence0.indexOf(0) % colors.length][8])
             .attr('stroke-width', 2)
             .attr('fill', 'none')
+            .attr('cursor', 'pointer')
             .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
-            .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+            .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+            .on('mouseover', function(){
+                d3.select(this)
+                .transition()
+                .attr('stroke-width', 5);
+            })
+            .on('mouseout', function(){
+                d3.select(this)
+                .transition()
+                .attr('stroke-width', 2);
+            })
+            .on('contextmenu', (d: any) => {
+                d3.event.preventDefault();
+                // console.log("This is PathMenu Test!", d.start)
+                selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
+                // console.log("This is PathMenu Test2!")
+                const PathMenu = document.getElementById('PathMenu');
+
+                d3.select(PathMenu)
+                    .transition()
+                    // .duration(500)
+                    .style("opacity", .9)
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
+
+                const PathDelete = document.getElementById('PathDelete');
+                // const CloseMenu = document.getElementById('CloseMenu');
+                d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                PathDelete.onclick = function (){
+                    console.log("This is the PathDelete function!")
+                };
+                checkCloseMenu(2);
+            });
 
         // 绘制认知路径
         if (learningPath.length !== 0) {
@@ -546,8 +689,6 @@ export async function drawMap(
                 .attr('id', d => d.id)
                 .attr('fill', colors[globalSequence.indexOf(com.id) % colors.length][6])
                 .on('mouseover', function(d) {
-
-                    
                     if (selectNow === ''){
                         d3.select(document.getElementById('ListMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
@@ -562,12 +703,12 @@ export async function drawMap(
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 28) + "px");
                 })
-                
                 .on("mouseout", function (d) {
                     const divTooltip = document.getElementById('facet-tree-tooltip');
                     d3.select(divTooltip).transition().transition()
                         .duration(500)
                         .style("opacity", 0);
+                    // checkCloseMenu(2);
                 });
             // .on('contextmenu', d => {
             //     d3.event.preventDefault();
@@ -754,6 +895,9 @@ export async function drawMap(
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
+                })
+                .on('mouseout', function() {
+                    // checkCloseMenu(2);
                 });
             canvas.append('g')
                 .attr('id', com.id + 'edges')
@@ -765,8 +909,42 @@ export async function drawMap(
                 .attr('stroke', colors[globalSequence.indexOf(com.id) % colors.length][8])
                 .attr('stroke-width', 2)
                 .attr('fill', 'none')
+                .attr('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow' + globalSequence.indexOf(com.id) + ')')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                .on('mouseover', function(){
+                    d3.select(this)
+                    .transition()
+                    .attr('stroke-width', 5);
+                })
+                .on('mouseout', function(){
+                    d3.select(this)
+                    .transition()
+                    .attr('stroke-width', 2);
+                })
+                .on('contextmenu', (d: any) => {
+                    d3.event.preventDefault();
+                    // console.log("This is PathMenu Test!", d.start)
+                    selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
+                    // console.log("This is PathMenu Test2!")
+                    const PathMenu = document.getElementById('PathMenu');
+    
+                    d3.select(PathMenu)
+                        .transition()
+                        // .duration(500)
+                        .style("opacity", .9)
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px')
+                        ;
+    
+                    const PathDelete = document.getElementById('PathDelete');
+                    // const CloseMenu = document.getElementById('CloseMenu');
+                    d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                    PathDelete.onclick = function (){
+                        console.log("This is the PathDelete function!")
+                    };
+                    checkCloseMenu(2);
+                });
         }
         console.log("hahahahah", sequences)
         canvas.append('g')
@@ -818,7 +996,8 @@ export async function drawMap(
             const nElement = document.getElementById(com.id + 'nodes');
             // 给这个元素加上两个监听
             d3.select(nElement)
-                .selectAll('circle')
+            .selectAll('circle')
+            .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
                 d3.event.preventDefault();
@@ -832,38 +1011,45 @@ export async function drawMap(
                     // .duration(500)
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
-                const CloseMenu = document.getElementById('CloseMenu');
+                // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    console.log(topics[d.id])
+                    console.log(d)
+                    deleteTopic(topics[d.id])
                 };
                 OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!")
+                    console.log("Assemble Successfully!");
+                    assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
-                CloseMenu.onclick = function (){
-                    console.log('Close Menu!');
-                    selectNow = '';
-                    d3.select(ListMenu)
-                    .transition().transition()
-                    .duration(500)
-                    .style("opacity", 0);
-                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
-                    // console.log((document.getElementById('inputNewTopic')));
-                }
+
+                checkCloseMenu(1);
+
+
+                // CloseMenu.onclick = function (){
+                //     console.log('Close Menu!');
+                //     selectNow = '';
+                //     d3.select(ListMenu)
+                //     .transition().transition()
+                //     .duration(500)
+                //     .style("opacity", 0);
+                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                // };
             });
 
             const tElement = document.getElementById(com.id + 'text');
             d3.select(tElement)
-                .selectAll('text')
+            .selectAll('text')
+            .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
                 d3.event.preventDefault();
@@ -877,33 +1063,37 @@ export async function drawMap(
                     // .duration(500)
                     .style("opacity", .9)
                     .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
 
                 const OptionDelete = document.getElementById('OptionDelete');
                 const OptionAssemble = document.getElementById('OptionAssemble');
                 const OptionSelect = document.getElementById('OptionSelect');
-                const CloseMenu = document.getElementById('CloseMenu');
+                // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    // DeleteTopic(d.id);
-                    console.log("Delete Successfully!", d);
+                    console.log(topics[d.id])
+                    console.log(d)
+                    deleteTopic(d.id);
                 };
                 OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!")
+                    console.log("Assemble Successfully!");
+                    assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
                     console.log("Select Successfully!")
                 };
-                CloseMenu.onclick = function (){
-                    console.log('Close Menu!');
-                    selectNow = '';
-                    d3.select(ListMenu)
-                    .transition().transition()
-                    .duration(500)
-                    .style("opacity", 0);
-                    (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
-                    // console.log((document.getElementById('inputNewTopic')));
-                }
+
+                checkCloseMenu(1);
+                // CloseMenu.onclick = function (){
+                //     console.log('Close Menu!');
+                //     selectNow = '';
+                //     d3.select(ListMenu)
+                //     .transition().transition()
+                //     .duration(500)
+                //     .style("opacity", 0);
+                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                // };
             });
         }
         // 下面这个是点击整个大圆时的交互
@@ -987,8 +1177,8 @@ export async function drawMap(
                 radius,
                 communityRelation,
                 topicId2Community[-1] !== undefined ? topicId2Community[-1] : undefined
-            
-            
+
+
             );
             // 使用d3画知识簇
             canvas.select('#com')
@@ -1026,7 +1216,7 @@ export async function drawMap(
                     com.r,
                     graph[com.id],
                     com.id === topicId2Community[-1] ? -1 : undefined
-                
+
                 );
                 for (let node of tmp.nodes) {
                     nodePositions[node.id] = node;
@@ -1055,7 +1245,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
                     .selectAll('text')
@@ -1211,7 +1402,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
                     .selectAll('text')
@@ -1366,7 +1558,7 @@ export async function drawMap(
                                     newStr = tmpStr;
                             }}
                             return newStr;
-    
+
                         }
                         else {
                             return topics[sequences[d.id][0]];
@@ -1664,7 +1856,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', d => d.id === id ? 'none' : 'inline');
-              
+
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
                         .selectAll('path')
@@ -1773,6 +1965,11 @@ export async function drawMap(
                             let topic = '';
                             for (let topicId of d.topics) {
                                 topic += topics[topicId] + ' ';
+                            }
+                            if (selectPathNow === ''){
+                                d3.select(document.getElementById('PathMenu'))
+                                .style("left", (d3.event.pageX + 20) + 'px')
+                                .style("top", (d3.event.pageY + 20)+ 'px');
                             }
                             divTooltip.transition()
                                 .duration(200)
