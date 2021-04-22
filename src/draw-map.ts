@@ -58,8 +58,8 @@ export async function drawMap(
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
     deleteTopic,
-    assembleTopic, //点击装配时的回调函数
-    selectTopic ,//点击装配时的回调函数
+    assembleTopic,//点击装配时的回调函数
+    selectTopic,//点击装配时的回调函数
     insertTopic,
     clickPath//点击依赖时回调
 ) {
@@ -96,7 +96,7 @@ export async function drawMap(
     }
 
     function checkCloseMenu(occasion) {
-        if (occasion === 1) {
+        if (occasion === 1 && useTopicEdit === 'yes') {
             var selectTemp = selectNow;
             setTimeout(function() {
                 if (!optionNow && selectTemp === selectNow){
@@ -112,7 +112,7 @@ export async function drawMap(
                 }
             }, 3000);
         };
-        if (occasion === 2) {
+        if (occasion === 2 && useRelationEdit === 'yes') {
             var selectTemp = selectPathNow;
             setTimeout(function() {
                 if (!optionPathNow && selectTemp === selectPathNow){
@@ -405,13 +405,13 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    //const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
-      const radius = svg.clientWidth / 2 ;
+    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
+    const radiusx = svg.clientWidth / 2 ;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
     if (Object.keys(communityRelation).length === 0) {
-        const nodes0 = {r: radius, id: 0, cx: radius, cy: radius}
+        const nodes0 = {r: radius, id: 0, cx: radiusx, cy: radius}
         const edges0 = {}
         const sequence0 = [0]
         //globalSequence是簇之间的序列关系
@@ -428,7 +428,7 @@ export async function drawMap(
             .selectAll('circle')
             .append('circle')
             .attr('r', radius)
-            .attr('cx', radius)
+            .attr('cx', radiusx)
             .attr('cy', radius)
             .attr('id', d => 'com' + 0)
             .attr('fill', (d, i) => colors[i % colors.length][1]);
@@ -436,7 +436,7 @@ export async function drawMap(
         // 绘制簇内信息
 
         const tmp = calcCircleLayout(
-            {x: radius, y: radius},
+            {x: radiusx, y: radius},
             radius,
             graph[0],
             0
@@ -613,7 +613,7 @@ export async function drawMap(
     else {
 
         const {nodes, edges, sequence} = calcCircleLayout(
-            {x: radius, y: radius},
+            {x: radiusx, y: radius},
             radius,
             communityRelation,
             topicId2Community[-1] !== undefined ? topicId2Community[-1] : undefined
@@ -1194,7 +1194,7 @@ export async function drawMap(
             // 传入的是那个知识簇的id
             // 调用函数计算每个簇的圆心和半径
             const {nodes, edges} = calcCircleLayout(
-                {x: radius, y: radius},
+                {x: radiusx, y: radius},
                 radius,
                 communityRelation,
                 topicId2Community[-1] !== undefined ? topicId2Community[-1] : undefined
@@ -1226,7 +1226,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('x', d => d.cx - 14 * judgementStringLengthWithChinese(topics[sequences[d.id][0]]) / 2)
                 .attr('y', (d, i) => {
-                    if (nodes[i].cy < radius) return d.cy - d.r - 24;
+                    if (nodes[i].cy < radiusx) return d.cy - d.r - 24;
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
@@ -1353,7 +1353,7 @@ export async function drawMap(
             // 传入的是那个知识簇的id
             // 调用函数计算每个簇的圆心和半径
             const {nodes, edges} = calcCircleLayoutWithoutReduceCrossing(
-                {x: radius, y: radius},
+                {x: radiusx, y: radius},
                 radius,
                 communityRelation,
                 globalSequence,
@@ -1508,7 +1508,7 @@ export async function drawMap(
         //@ts-ignore
         function comSecond(id) {
             const {nodes, edges} = calcCircleLayoutSecondLayer(
-                {x: radius, y: radius},
+                {x: radiusx, y: radius},
                 radius,
                 communityRelation,
                 globalSequence,
@@ -1800,7 +1800,7 @@ export async function drawMap(
         //@ts-ignore
         function nodeFirst(id, c) {
             const {nodes, edges} = calcCircleLayoutSecondLayer(
-                {x: radius, y: radius},
+                {x: radiusx, y: radius},
                 radius,
                 communityRelation,
                 globalSequence,
