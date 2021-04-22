@@ -16,6 +16,8 @@ import {geoCircle} from 'd3';
 const colors = [];
 var selectNow = '';
 var optionNow = '';
+var selectPathNow = '';
+var optionPathNow = '';
 const optionColor = '#7B7B7B';
 const optionSelectedColor = '#ADADAD';
 const optionStrokeColor = '#3C3C3C';
@@ -99,6 +101,22 @@ export async function drawMap(
                         .duration(500)
                         .style("opacity", 0);
                     selectNow = '';
+                    // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
+                    //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                    // }
+                }
+            }, 3000);
+        };
+        if (occasion === 2) {
+            var selectTemp = selectPathNow;
+            setTimeout(function() {
+                if (!optionPathNow && selectTemp === selectPathNow){
+                    
+                    d3.select(document.getElementById("PathMenu"))
+                        .transition().transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                    selectPathNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // }
@@ -258,6 +276,64 @@ export async function drawMap(
         //     // .append('p')
         //     .style('padding-top', '5px')
         //     .text("\u2715 关闭菜单s");
+    }
+    if (!document.getElementById('PathMenu')) {
+        d3.select('body').append('div')
+            .attr('id', 'PathMenu')
+            .style('position', 'absolute')
+            .style('opacity', 0)
+            .style('text-align', 'center')
+            .style('font-size', '12px')
+            .style('color', 'white')
+            .style('padding', '5px 3px')
+            .style('width', '120px')
+            .style('height', '110px')
+            .style('background', optionColor)
+            .style('border-radius', '6px')
+            .on('mouseover', function() {
+                optionPathNow = 'yes';
+            })
+            .on('mouseout', function() {
+                optionPathNow = '';
+                checkCloseMenu(2);
+            });
+
+
+        d3.select(document.getElementById('PathMenu'))
+            .append('div')
+            .attr('id', 'CompleteRelation')
+            .style('height', '50px')
+            .style('padding-top', '10px')
+            .on('mouseover', function() {
+                optionPathNow = 'yes';
+            })
+            .on('mouseout', function() {
+                // checkCloseMenu();
+            });
+
+        d3.select(document.getElementById('PathMenu'))
+            .append('div')
+            .attr('id', 'PathDelete')
+            .style('height', '25px')
+            .style('margin-top', '15px')
+            .on('mouseover', function(){
+                d3.select(document.getElementById('PathDelete'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionSelectedColor);
+                optionPathNow = 'yes';
+
+            })
+            .on('mouseout', function(){
+                d3.select(document.getElementById('PathDelete'))
+                    .transition()
+                    .duration(300)
+                    .style("background", optionColor);
+                // checkCloseMenu();
+            })
+            
+            .style('padding-top', '5px')
+            .text("删除该认知关系");
     }
 
 
@@ -448,8 +524,47 @@ export async function drawMap(
             .attr('stroke', colors[globalSequence0.indexOf(0) % colors.length][8])
             .attr('stroke-width', 2)
             .attr('fill', 'none')
+            .attr('cursor', 'pointer')
             .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
-            .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+            .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+            .on('mouseover', function(){
+                d3.select(this)
+                .transition()
+                .attr('stroke-width', 5);
+                if (selectPathNow === ''){
+                    d3.select(document.getElementById('PathMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
+            })
+            .on('mouseout', function(){
+                d3.select(this)
+                .transition()
+                .attr('stroke-width', 2);
+            })
+            .on('contextmenu', (d: any) => {
+                d3.event.preventDefault();
+                // console.log("This is PathMenu Test!", d.start)
+                selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
+                // console.log("This is PathMenu Test2!")
+                const PathMenu = document.getElementById('PathMenu');
+
+                d3.select(PathMenu)
+                    .transition()
+                    // .duration(500)
+                    .style("opacity", .9)
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px')
+                    ;
+
+                const PathDelete = document.getElementById('PathDelete');
+                // const CloseMenu = document.getElementById('CloseMenu');
+                d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                PathDelete.onclick = function (){
+                    console.log("This is the PathDelete function!")
+                };
+                checkCloseMenu(2);
+            });
 
         // 绘制认知路径
         if (learningPath.length !== 0) {
@@ -800,8 +915,47 @@ export async function drawMap(
                 .attr('stroke', colors[globalSequence.indexOf(com.id) % colors.length][8])
                 .attr('stroke-width', 2)
                 .attr('fill', 'none')
+                .attr('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow' + globalSequence.indexOf(com.id) + ')')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                .on('mouseover', function(){
+                    d3.select(this)
+                    .transition()
+                    .attr('stroke-width', 5);
+                    if (selectPathNow === ''){
+                        d3.select(document.getElementById('PathMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                })
+                .on('mouseout', function(){
+                    d3.select(this)
+                    .transition()
+                    .attr('stroke-width', 2);
+                })
+                .on('contextmenu', (d: any) => {
+                    d3.event.preventDefault();
+                    // console.log("This is PathMenu Test!", d.start)
+                    selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
+                    // console.log("This is PathMenu Test2!")
+                    const PathMenu = document.getElementById('PathMenu');
+    
+                    d3.select(PathMenu)
+                        .transition()
+                        // .duration(500)
+                        .style("opacity", .9)
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px')
+                        ;
+    
+                    const PathDelete = document.getElementById('PathDelete');
+                    // const CloseMenu = document.getElementById('CloseMenu');
+                    d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                    PathDelete.onclick = function (){
+                        console.log("This is the PathDelete function!")
+                    };
+                    checkCloseMenu(2);
+                });
         }
         console.log("hahahahah", sequences)
         canvas.append('g')
@@ -853,7 +1007,8 @@ export async function drawMap(
             const nElement = document.getElementById(com.id + 'nodes');
             // 给这个元素加上两个监听
             d3.select(nElement)
-                .selectAll('circle')
+            .selectAll('circle')
+            .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
                 d3.event.preventDefault();
@@ -904,7 +1059,8 @@ export async function drawMap(
 
             const tElement = document.getElementById(com.id + 'text');
             d3.select(tElement)
-                .selectAll('text')
+            .selectAll('text')
+            .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
                 d3.event.preventDefault();
@@ -1102,7 +1258,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
                     .selectAll('text')
@@ -1258,7 +1415,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
                     .selectAll('text')
