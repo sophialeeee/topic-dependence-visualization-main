@@ -13,27 +13,38 @@ const treesvg = document.getElementById('tree');
 const svg = document.getElementById('map');
 
 
-axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
-    .then(res => {
-        console.log("rs",res.data);
-        drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+// axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+//     .then(res => {
+//         console.log("rs",res.data);
+//         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+//
+//         },()=>{
+//
+//         },()=>{
+//
+//         },()=>{
+//
+//         });
+//     })
+//     .catch(e => console.log(e));
 
-        },()=>{
+drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {
+    console.log('click facet')
 
-        },()=>{
+}, ()=>{
+    console.log('click facet')
 
-        },);
-    })
-    .catch(e => console.log(e));
+},() => {
+    console.log('insert callback')
+},(a,b)=>{
+    console.log('delete callback')
+},()=>{
+    console.log('assemble callback')
 
-// drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,() => {
-//     console.log('insert callback')
+},(a,b)=>{
+    console.log('select callback')
 
-// },(id)=>{
-//     console.log(id)
-//     console.log('delete callback')
-
-// });
+});
 
 async function clickFacet(facetId: number) {
 
