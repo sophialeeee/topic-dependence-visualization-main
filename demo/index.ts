@@ -18,22 +18,20 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
         console.log("rs",res.data);
         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
-        },()=>{
+}, ()=>{
+    console.log('click facet')
 
-        },()=>{
+},() => {
+    console.log('insert callback')
+},(a,b)=>{
+    console.log('delete callback')
+},()=>{
+    console.log('assemble callback')
 
-        },clickPath,);
-    })
-    .catch(e => console.log(e));
+},(a,b)=>{
+    console.log('select callback')
 
-// drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet,() => {
-//     console.log('insert callback')
-
-// },(id)=>{
-//     console.log(id)
-//     console.log('delete callback')
-
-// });
+});
 
 async function clickFacet(facetId: number) {
 
@@ -94,8 +92,4 @@ async function clickFacet(facetId: number) {
         document.getElementById('assembleNumber').innerHTML = '';
     }
 
-}
-async function clickPath(b,c){
-    console.log("SS",b);
-    console.log("DDDD",c);
 }

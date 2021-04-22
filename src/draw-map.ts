@@ -53,9 +53,10 @@ export async function drawMap(
     learningPath: number[] = [],//这个是后期用到的，也不用传
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
-    insertTopic,
     deleteTopic,
-    assembleTopic,//点击装配时的回调函数
+    assembleTopic //点击装配时的回调函数
+    selectTopic ,//点击装配时的回调函数
+    insertTopic
     clickPath//点击依赖时回调
 ) {
     let {
@@ -1034,16 +1035,16 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    console.log(topics[d.id])
-                    console.log(d)
-                    deleteTopic(topics[d.id])
+                    console.log("delete callback in topic");
+                    deleteTopic(topics[d.id],d.id)
                 };
                 OptionAssemble.onclick = function (){
                     console.log("Assemble Successfully!");
                     assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
-                    console.log("Select Successfully!")
+                    console.log("select callback in topic");
+                    selectTopic(d.id, topics[d.id])
                 };
 
                 checkCloseMenu(1);
@@ -1086,16 +1087,18 @@ export async function drawMap(
                 // const CloseMenu = document.getElementById('CloseMenu');
                 d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
                 OptionDelete.onclick = function (){
-                    console.log(topics[d.id])
-                    console.log(d)
-                    deleteTopic(d.id);
+                    console.log("delete callback in topic");
+
+                    deleteTopic(topics[d.id],d.id)
                 };
                 OptionAssemble.onclick = function (){
                     console.log("Assemble Successfully!");
                     assembleTopic(d.id, topics[d.id]);
                 };
                 OptionSelect.onclick = function (){
-                    console.log("Select Successfully!")
+                    console.log("select callback in topic");
+                    selectTopic(d.id, topics[d.id])
+
                 };
 
                 checkCloseMenu(1);
@@ -2027,6 +2030,7 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
+    console.log("str", str);
     if (str) {
         for (let i = 0; i < str.length; i++) {
             if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
