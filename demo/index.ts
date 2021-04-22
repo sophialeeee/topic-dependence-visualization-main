@@ -22,9 +22,7 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
 
         },()=>{
 
-        },()=>{
-
-        },);
+        },clickPath,);
     })
     .catch(e => console.log(e));
 
@@ -96,4 +94,8 @@ async function clickFacet(facetId: number) {
         document.getElementById('assembleNumber').innerHTML = '';
     }
 
+}
+async function clickPath(b,c){
+    console.log("SS",b);
+    console.log("DDDD",c);
 }

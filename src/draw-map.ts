@@ -563,7 +563,7 @@ export async function drawMap(
                 d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
                 PathDelete.onclick = function (){
                     console.log("This is the PathDelete function!")
-                    clickPath(null,topics[d.start],topics[d.end]);
+                    clickPath(topics[d.start],topics[d.end]);
                 };
                 checkCloseMenu(2);
             });
@@ -955,7 +955,7 @@ export async function drawMap(
                     d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
                     PathDelete.onclick = function (){
                         console.log("This is the PathDelete function!")
-                        clickPath(null,topics[d.start],topics[d.end]);
+                        clickPath(topics[d.start],topics[d.end]);
                     };
                     checkCloseMenu(2);
                 });
