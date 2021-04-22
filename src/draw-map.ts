@@ -1821,7 +1821,6 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
-    console.log("str", str);
     if (str) {
         for (let i = 0; i < str.length; i++) {
             if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
