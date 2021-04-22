@@ -532,6 +532,11 @@ export async function drawMap(
                 d3.select(this)
                 .transition()
                 .attr('stroke-width', 5);
+                if (selectPathNow === ''){
+                    d3.select(document.getElementById('PathMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
             })
             .on('mouseout', function(){
                 d3.select(this)
@@ -919,6 +924,11 @@ export async function drawMap(
                     d3.select(this)
                     .transition()
                     .attr('stroke-width', 5);
+                    if (selectPathNow === ''){
+                        d3.select(document.getElementById('PathMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
                 })
                 .on('mouseout', function(){
                     d3.select(this)
@@ -1969,11 +1979,6 @@ export async function drawMap(
                             let topic = '';
                             for (let topicId of d.topics) {
                                 topic += topics[topicId] + ' ';
-                            }
-                            if (selectPathNow === ''){
-                                d3.select(document.getElementById('PathMenu'))
-                                .style("left", (d3.event.pageX + 20) + 'px')
-                                .style("top", (d3.event.pageY + 20)+ 'px');
                             }
                             divTooltip.transition()
                                 .duration(200)
