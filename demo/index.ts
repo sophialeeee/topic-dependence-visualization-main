@@ -18,20 +18,7 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
         console.log("rs",res.data);
         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
-}, ()=>{
-    console.log('click facet')
-
-},() => {
-    console.log('insert callback')
-},(a,b)=>{
-    console.log('delete callback')
-},()=>{
-    console.log('assemble callback')
-
-},(a,b)=>{
-    console.log('select callback')
-
-});
+}, ()=>{},() => {},()=>{},(a,b)=>{});})
 
 async function clickFacet(facetId: number) {
 
