@@ -78,5 +78,4 @@ async function clickFacet(facetId: number) {
         console.log(e);
         document.getElementById('assembleNumber').innerHTML = '';
     }
-
 }
