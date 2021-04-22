@@ -55,7 +55,8 @@ export async function drawMap(
     clickFacet,//点击分面时的回调函数
     insertTopic,
     deleteTopic,
-    assembleTopic //点击装配时的回调函数
+    assembleTopic,//点击装配时的回调函数
+    clickPath//点击依赖时回调
 ) {
     let {
         topics,
@@ -399,7 +400,8 @@ export async function drawMap(
     }
     // 补全键名，键名是所有的topic_id
     communityRelation = completeObj(communityRelation);
-    const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
+    //const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
+      const radius = svg.clientWidth / 2 ;
     console.log("communityRelation", communityRelation)
     console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
@@ -556,6 +558,7 @@ export async function drawMap(
                 d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
                 PathDelete.onclick = function (){
                     console.log("This is the PathDelete function!")
+                    clickPath(null,topics[d.start],topics[d.end]);
                 };
                 checkCloseMenu(2);
             });
@@ -942,6 +945,7 @@ export async function drawMap(
                     d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
                     PathDelete.onclick = function (){
                         console.log("This is the PathDelete function!")
+                        clickPath(null,topics[d.start],topics[d.end]);
                     };
                     checkCloseMenu(2);
                 });

@@ -22,6 +22,8 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
 
         },()=>{
 
+        },()=>{
+
         },);
     })
     .catch(e => console.log(e));
