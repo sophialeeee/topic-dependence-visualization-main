@@ -54,9 +54,9 @@ export async function drawMap(
     clickTopic,//点击主题时的回调函数
     clickFacet,//点击分面时的回调函数
     deleteTopic,
-    assembleTopic //点击装配时的回调函数
-    selectTopic ,//点击装配时的回调函数
-    insertTopic
+    assembleTopic,//点击装配时的回调函数
+    selectTopic,//点击装配时的回调函数
+    insertTopic,
     clickPath//点击依赖时回调
 ) {
     let {
