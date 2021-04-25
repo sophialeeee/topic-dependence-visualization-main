@@ -12,13 +12,16 @@ const treesvg = document.getElementById('tree');
 
 const svg = document.getElementById('map');
 
+const TopicEdit = 'yes';
+const RelationEdit = 'yes';
+const FacetEdit = 'no';
 
 axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
     .then(res => {
         console.log("rs",res.data);
         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
-}, ()=>{},() => {},()=>{},(a,b)=>{});})
+}, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit);})
 
 async function clickFacet(facetId: number) {
 
