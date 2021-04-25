@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import axios from 'axios';
 import {presetPalettes} from '@ant-design/colors';
 // import { drawTree } from 'facet-tree-visualization';
-import {drawTreeNumber} from '../module/facetTree'
+import {drawTreeNumber} from '../module/facetTree';
 import {
     calcCircleLayout,
     calcCircleLayoutSecondLayer,
@@ -18,13 +18,16 @@ const colors = [];
 var useTopicEdit = 'yes';
 var useRelationEdit = 'yes';
 
+var Target = null;
 var selectNow = '';
 var optionNow = '';
 var selectPathNow = '';
 var optionPathNow = '';
-const optionColor = '#7B7B7B';
-const optionSelectedColor = '#ADADAD';
-const optionStrokeColor = '#3C3C3C';
+const optionColor = 'white'; //'#7B7B7B'
+const optionSelectedColor = 'black';
+const optionShaow = '0px 0px 0px #888888';
+const optionSelectedShadow = '2px 3px 2px #888888';
+
 for (let key in presetPalettes) {
     colors.push(presetPalettes[key].slice(0, 10));
 }
@@ -49,6 +52,7 @@ export const link: any = d3.line()
     .y(function (d) { return d.y })
     .curve(d3.curveCatmullRom.alpha(0.5));
 
+    
 export async function drawMap(
     mapData: MapData,//后端返回的数据
     svg: HTMLElement,//画整张图需要的svg
@@ -61,7 +65,10 @@ export async function drawMap(
     assembleTopic,//点击装配时的回调函数
     selectTopic,//点击装配时的回调函数
     insertTopic,
-    clickPath//点击依赖时回调
+    clickPath,//点击依赖时回调
+    // useTopicEdit: string,
+    // useRelationEdit: string,
+    // useFacetEdit: string
 ) {
     let {
         topics,
@@ -81,7 +88,7 @@ export async function drawMap(
             .style('padding', '1px 3px');
     }
 
-
+    // console.log('useFacetEdit', useFacetEdit)
     function fucCheckLength(strTemp) {
         var i, sum;
         sum = 0;
@@ -130,6 +137,54 @@ export async function drawMap(
         };
     }
 
+    function onSelectOption(option){
+        d3.select(option)
+            .transition()
+            .duration(300)
+            // .style("background", optionSelectedColor);
+            .style('font-weight', 'bold')
+            .style('font-size', '14px');
+        optionNow = 'yes';
+    }
+    function offSelectOption(option){
+        d3.select(option)
+            .transition()
+            .duration(300)
+            .style('font-weight', 'normal')
+            .style('font-size', '12px');
+    }
+
+    function onClickRight(target, object){
+        if (object === 'topic'){
+            d3.event.preventDefault();
+            selectNow = target.id;
+            const ListMenu = document.getElementById('ListMenu');
+            const CompleteName = document.getElementById('CompleteName');
+            d3.select(ListMenu)
+                .transition()
+                // .duration(500)
+                .style("opacity", 1)
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            d3.select(CompleteName).html(topics[target.id]);
+            checkCloseMenu(1);
+        }
+        if (object === 'path'){
+            d3.event.preventDefault();
+            selectPathNow = topics[target.start] + topics[target.end];
+            const PathMenu = document.getElementById('PathMenu');
+            d3.select(PathMenu)
+                .transition()
+                // .duration(500)
+                .style("opacity", 1)
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            d3.select(document.getElementById('CompleteRelation'))
+                .html('<b>' + topics[target.start] + '</b><br/>' + '到' + '<br/><b>' + topics[target.end] + '</b>');
+            checkCloseMenu(2);
+        }
+    }
+
     if (!document.getElementById('ListMenu') && useTopicEdit === 'yes') {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
@@ -137,12 +192,13 @@ export async function drawMap(
             .style('opacity', 0)
             .style('text-align', 'center')
             .style('font-size', '12px')
-            .style('color', 'white')
+            .style('color', 'black')
             .style('padding', '5px 3px')
             .style('width', '130px')
             .style('height', '180px')
             .style('background', optionColor)
-            .style('border-radius', '6px')
+            .style('border-radius', '10px')
+            .style('border', '2px solid black')
             .on('mouseover', function() {
                 optionNow = 'yes';
             })
@@ -155,8 +211,8 @@ export async function drawMap(
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
-            .style('height', '20px')
-            .style('padding-top', '10px')
+            .style('height', '24px')
+            .style('padding-top', '5px')
             .on('mouseover', function() {
                 optionNow = 'yes';
             })
@@ -167,22 +223,36 @@ export async function drawMap(
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionDelete')
-            .style('height', '25px')
-            .style('margin-top', '15px')
+            .style('height', '22px')
+            .style('width', '120px')
+            .style('margin-left', '5px')
+            .style('margin-top', '10px')
+            .style('border-radius', '15px')
+            // .style('border', '2px solid white')
+            .style('cursor', 'pointer')
             .on('mouseover', function(){
-                d3.select(document.getElementById('OptionDelete'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionSelectedColor);
-                optionNow = 'yes';
+                // d3.select(this)
+                //     .transition()
+                //     .duration(300)
+                //     // .style("background", optionSelectedColor);
+                //     .style('border', '2px solid black');
+                // optionNow = 'yes';
+                onSelectOption(this);
 
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('OptionDelete'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionColor);
-                // checkCloseMenu();
+                // d3.select(document.getElementById('OptionDelete'))
+                //     .transition()
+                //     .duration(300)
+                //     // .style("background", optionColor);
+                //     // .style('box-shadow', optionShaow);
+                //     .style('border', '2px solid white');
+                // // checkCloseMenu();
+                offSelectOption(this);
+            })
+            .on('click', function(){
+                console.log("deleteTopic called!", Target);
+                deleteTopic(topics[Target.id],Target.id)
             })
             
             .style('padding-top', '5px')
@@ -191,40 +261,69 @@ export async function drawMap(
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAssemble')
-            .style('height', '25px')
+            .style('height', '22px')
+            .style('width', '120px')
+            .style('margin-left', '5px')
+            .style('margin-top', '5px')
+            .style('border-radius', '15px')
+            .style('cursor', 'pointer')
             .on('mouseover', function(){
-                d3.select(document.getElementById('OptionAssemble'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionSelectedColor);
-                optionNow = 'yes';
+                // d3.select(document.getElementById('OptionAssemble'))
+                //     .transition()
+                //     .duration(300)
+                //     .style('color', 'white')
+                //     .style("background", optionSelectedColor);
+                // optionNow = 'yes';
+                onSelectOption(this);
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('OptionAssemble'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionColor);
+                // d3.select(document.getElementById('OptionAssemble'))
+                //     .transition()
+                //     .duration(300)
+                //     .style('color', 'black')
+                //     .style("background", optionColor);
                 // checkCloseMenu();
+                offSelectOption(this);
+            })
+            .on('click', function(){
+                console.log("assembleTopic called!", Target.id);
+                assembleTopic(Target.id, topics[Target.id]);
             })
             .style('padding-top', '5px')
             .text("装配该主题");
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
-            .style('height', '25px')
+            .style('height', '22px')
+            .style('width', '120px')
+            .style('border-radius', '15px')
+            .style('margin-left', '5px')
+            .style('margin-top', '5px')
+            .style('cursor', 'pointer')
             .on('mouseover', function(){
-                d3.select(document.getElementById('OptionSelect'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionSelectedColor);
-                optionNow = 'yes';
+                // d3.select(document.getElementById('OptionSelect'))
+                //     .transition()
+                //     .duration(300)
+                //     // .style("background", optionSelectedColor);
+                //     .style('font-weight', 'bold')
+                //     .style('font-size', '14px');
+                // optionNow = 'yes';
+                onSelectOption(this);
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('OptionSelect'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionColor);
+                // d3.select(document.getElementById('OptionSelect'))
+                //     .transition()
+                //     .duration(300)
+                //     .style('color', 'black')
+                //     // .style("background", optionColor);
+                //     .style('font-weight', 'normal')
+                //     .style('font-size', '12px');
                 // checkCloseMenu();
+                offSelectOption(this);
+            })
+            .on('click', function(){
+                console.log("selectTopic called!");
+                selectTopic(Target.id, topics[Target.id]);
             })
             .style('padding-top', '5px')
             .text("添加依赖关系");
@@ -237,25 +336,32 @@ export async function drawMap(
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAdd')
-            .style('height', '25px')
+            .style('height', '22px')
+            .style('width', '120px')
+            .style('margin-left', '5px')
+            .style('margin-top', '5px')
+            .style('border-radius', '15px')
+            .style('cursor', 'pointer')
             .on('mouseover', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionSelectedColor);
-                optionNow = 'yes';
+                // d3.select(document.getElementById('OptionAdd'))
+                //     .transition()
+                //     .duration(300)
+                //     .style("background", '#E0E0E0');
+                // optionNow = 'yes';
+                onSelectOption(this);
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('OptionAdd'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionColor);
+                // d3.select(document.getElementById('OptionAdd'))
+                //     .transition()
+                //     .duration(300)
+                //     .style("background", optionColor);
                 // checkCloseMenu();
+                offSelectOption(this);
             })
             .style('padding-top', '5px')
             .text("添加新主题")
             .on('click', function(){
-                console.log("insert callback start");
+                console.log("insertTopic called!");
                 insertTopic();
             });
         // d3.select(document.getElementById('ListMenu'))
@@ -289,12 +395,13 @@ export async function drawMap(
             .style('opacity', 0)
             .style('text-align', 'center')
             .style('font-size', '12px')
-            .style('color', 'white')
+            .style('color', 'black')
             .style('padding', '5px 3px')
             .style('width', '120px')
             .style('height', '110px')
             .style('background', optionColor)
-            .style('border-radius', '6px')
+            .style('border-radius', '10px')
+            .style('border', '2px solid black')
             .on('mouseover', function() {
                 optionPathNow = 'yes';
             })
@@ -321,22 +428,28 @@ export async function drawMap(
             .attr('id', 'PathDelete')
             .style('height', '25px')
             .style('margin-top', '15px')
+            .style('cursor', 'pointer')
             .on('mouseover', function(){
-                d3.select(document.getElementById('PathDelete'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionSelectedColor);
-                optionPathNow = 'yes';
+                // d3.select(document.getElementById('PathDelete'))
+                //     .transition()
+                //     .duration(300)
+                //     .style("background", optionSelectedColor);
+                // optionPathNow = 'yes';
+                onSelectOption(this);
 
             })
             .on('mouseout', function(){
-                d3.select(document.getElementById('PathDelete'))
-                    .transition()
-                    .duration(300)
-                    .style("background", optionColor);
+                // d3.select(document.getElementById('PathDelete'))
+                //     .transition()
+                //     .duration(300)
+                //     .style("background", optionColor);
                 // checkCloseMenu();
+                offSelectOption(this);
             })
-            
+            .on('click', function(){
+                console.log("This is the PathDelete function!")
+                clickPath(topics[Target.start],topics[Target.end]);
+            })
             .style('padding-top', '5px')
             .text("删除该认知关系");
     }
@@ -549,28 +662,30 @@ export async function drawMap(
             //     .attr('stroke-width', 2);
             // })
             .on('contextmenu', (d: any) => {
-                d3.event.preventDefault();
-                // console.log("This is PathMenu Test!", d.start)
-                selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
-                // console.log("This is PathMenu Test2!")
-                const PathMenu = document.getElementById('PathMenu');
+                // d3.event.preventDefault();
+                // // console.log("This is PathMenu Test!", d.start)
+                // selectPathNow = '<b>' + topics[d.start] + '</b><br/>' + '到' + '<br/><b>' + topics[d.end] + '</b>';
+                // // console.log("This is PathMenu Test2!")
+                // const PathMenu = document.getElementById('PathMenu');
 
-                d3.select(PathMenu)
-                    .transition()
-                    // .duration(500)
-                    .style("opacity", .9)
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px')
-                    ;
+                // d3.select(PathMenu)
+                //     .transition()
+                //     // .duration(500)
+                //     .style("opacity", 1)
+                //     .style("left", (d3.event.pageX + 20) + 'px')
+                //     .style("top", (d3.event.pageY + 20)+ 'px')
+                //     ;
 
-                const PathDelete = document.getElementById('PathDelete');
-                // const CloseMenu = document.getElementById('CloseMenu');
-                d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
-                PathDelete.onclick = function (){
-                    console.log("This is the PathDelete function!")
-                    clickPath(topics[d.start],topics[d.end]);
-                };
-                checkCloseMenu(2);
+                // const PathDelete = document.getElementById('PathDelete');
+                // // const CloseMenu = document.getElementById('CloseMenu');
+                // d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                // PathDelete.onclick = function (){
+                //     console.log("This is the PathDelete function!")
+                //     clickPath(topics[d.start],topics[d.end]);
+                // };
+                // checkCloseMenu(2);
+                Target = d;
+                onClickRight(d, 'path');
             });
 
         // 绘制认知路径
@@ -941,28 +1056,30 @@ export async function drawMap(
                 //     .attr('stroke-width', 2);
                 // })
                 .on('contextmenu', (d: any) => {
-                    d3.event.preventDefault();
-                    // console.log("This is PathMenu Test!", d.start)
-                    selectPathNow = topics[d.start] + '<br/>' + '---->' + '<br/>' + topics[d.end];
-                    // console.log("This is PathMenu Test2!")
-                    const PathMenu = document.getElementById('PathMenu');
+                    // d3.event.preventDefault();
+                    // // console.log("This is PathMenu Test!", d.start)
+                    // selectPathNow = '<b>' + topics[d.start] + '</b><br/>' + '到' + '<br/><b>' + topics[d.end] + '</b>';
+                    // // console.log("This is PathMenu Test2!")
+                    // const PathMenu = document.getElementById('PathMenu');
     
-                    d3.select(PathMenu)
-                        .transition()
-                        // .duration(500)
-                        .style("opacity", .9)
-                        .style("left", (d3.event.pageX + 20) + 'px')
-                        .style("top", (d3.event.pageY + 20)+ 'px')
-                        ;
+                    // d3.select(PathMenu)
+                    //     .transition()
+                    //     // .duration(500)
+                    //     .style("opacity", 1)
+                    //     .style("left", (d3.event.pageX + 20) + 'px')
+                    //     .style("top", (d3.event.pageY + 20)+ 'px')
+                    //     ;
     
-                    const PathDelete = document.getElementById('PathDelete');
-                    // const CloseMenu = document.getElementById('CloseMenu');
-                    d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
-                    PathDelete.onclick = function (){
-                        console.log("This is the PathDelete function!")
-                        clickPath(topics[d.start],topics[d.end]);
-                    };
-                    checkCloseMenu(2);
+                    // const PathDelete = document.getElementById('PathDelete');
+                    // // const CloseMenu = document.getElementById('CloseMenu');
+                    // d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
+                    // PathDelete.onclick = function (){
+                    //     console.log("This is the PathDelete function!")
+                    //     clickPath(topics[d.start],topics[d.end]);
+                    // };
+                    // checkCloseMenu(2);
+                    Target = d;
+                    onClickRight(d, 'path');
                 });
         }
         console.log("hahahahah", sequences)
@@ -1019,50 +1136,40 @@ export async function drawMap(
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
-                d3.event.preventDefault();
+                Target = d;
+                onClickRight(d, 'topic');
+                // d3.event.preventDefault();
 
-                selectNow = d.id;
+                // selectNow = d.id;
 
-                const ListMenu = document.getElementById('ListMenu');
+                // const ListMenu = document.getElementById('ListMenu');
 
-                d3.select(ListMenu)
-                    .transition()
-                    // .duration(500)
-                    .style("opacity", .9)
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px')
-                    ;
+                // d3.select(ListMenu)
+                //     .transition()
+                //     // .duration(500)
+                //     .style("opacity", 1)
+                //     .style("left", (d3.event.pageX + 20) + 'px')
+                //     .style("top", (d3.event.pageY + 20)+ 'px');
 
-                const OptionDelete = document.getElementById('OptionDelete');
-                const OptionAssemble = document.getElementById('OptionAssemble');
-                const OptionSelect = document.getElementById('OptionSelect');
-                // const CloseMenu = document.getElementById('CloseMenu');
-                d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
-                OptionDelete.onclick = function (){
-                    console.log("delete callback in topic");
-                    deleteTopic(topics[d.id],d.id)
-                };
-                OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!");
-                    assembleTopic(d.id, topics[d.id]);
-                };
-                OptionSelect.onclick = function (){
-                    console.log("select callback in topic");
-                    selectTopic(d.id, topics[d.id])
-                };
-
-                checkCloseMenu(1);
-
-
-                // CloseMenu.onclick = function (){
-                //     console.log('Close Menu!');
-                //     selectNow = '';
-                //     d3.select(ListMenu)
-                //     .transition().transition()
-                //     .duration(500)
-                //     .style("opacity", 0);
-                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                // const OptionDelete = document.getElementById('OptionDelete');
+                // const OptionAssemble = document.getElementById('OptionAssemble');
+                // const OptionSelect = document.getElementById('OptionSelect');
+                // // const CloseMenu = document.getElementById('CloseMenu');
+                // d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
+                // OptionDelete.onclick = function (){
+                //     console.log("delete callback in topic");
+                //     deleteTopic(topics[d.id],d.id)
                 // };
+                // OptionAssemble.onclick = function (){
+                //     console.log("Assemble Successfully!");
+                //     assembleTopic(d.id, topics[d.id]);
+                // };
+                // OptionSelect.onclick = function (){
+                //     console.log("select callback in topic");
+                //     selectTopic(d.id, topics[d.id])
+                // };
+
+                // checkCloseMenu(1);
             });
 
             const tElement = document.getElementById(com.id + 'text');
@@ -1071,50 +1178,43 @@ export async function drawMap(
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
             .on('contextmenu', (d: any) => {
-                d3.event.preventDefault();
+                // d3.event.preventDefault();
 
-                selectNow = d.id;
+                // selectNow = d.id;
 
-                const ListMenu = document.getElementById('ListMenu');
+                // const ListMenu = document.getElementById('ListMenu');
 
-                d3.select(ListMenu)
-                    .transition()
-                    // .duration(500)
-                    .style("opacity", .9)
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px')
-                    ;
+                // d3.select(ListMenu)
+                //     .transition()
+                //     // .duration(500)
+                //     .style("opacity", 1)
+                //     .style("left", (d3.event.pageX + 20) + 'px')
+                //     .style("top", (d3.event.pageY + 20)+ 'px')
+                //     ;
+                Target = d;
+                onClickRight(d, 'topic');
+                
+                // const OptionDelete = document.getElementById('OptionDelete');
+                // const OptionAssemble = document.getElementById('OptionAssemble');
+                // const OptionSelect = document.getElementById('OptionSelect');
+                // // const CloseMenu = document.getElementById('CloseMenu');
+                // d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
+                // OptionDelete.onclick = function (){
+                //     console.log("delete callback in topic");
 
-                const OptionDelete = document.getElementById('OptionDelete');
-                const OptionAssemble = document.getElementById('OptionAssemble');
-                const OptionSelect = document.getElementById('OptionSelect');
-                // const CloseMenu = document.getElementById('CloseMenu');
-                d3.select(document.getElementById('CompleteName')).html(topics[d.id]);
-                OptionDelete.onclick = function (){
-                    console.log("delete callback in topic");
-
-                    deleteTopic(topics[d.id],d.id)
-                };
-                OptionAssemble.onclick = function (){
-                    console.log("Assemble Successfully!");
-                    assembleTopic(d.id, topics[d.id]);
-                };
-                OptionSelect.onclick = function (){
-                    console.log("select callback in topic");
-                    selectTopic(d.id, topics[d.id])
-
-                };
-
-                checkCloseMenu(1);
-                // CloseMenu.onclick = function (){
-                //     console.log('Close Menu!');
-                //     selectNow = '';
-                //     d3.select(ListMenu)
-                //     .transition().transition()
-                //     .duration(500)
-                //     .style("opacity", 0);
-                //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+                //     deleteTopic(topics[d.id],d.id)
                 // };
+                // OptionAssemble.onclick = function (){
+                //     console.log("Assemble Successfully!");
+                //     assembleTopic(d.id, topics[d.id]);
+                // };
+                // OptionSelect.onclick = function (){
+                //     console.log("select callback in topic");
+                //     selectTopic(d.id, topics[d.id])
+
+                // };
+
+                // checkCloseMenu(1);
             });
         }
         // 下面这个是点击整个大圆时的交互
@@ -1941,7 +2041,7 @@ export async function drawMap(
                     treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
-                            drawTreeNumber(treeSvg, res.data.data, clickFacet);
+                            drawTreeNumber(treeSvg, res.data.data, clickFacet, 'yes');
                         }).catch(err => console.log(err))
                     }
                     const es = calcEdgeWithSelectedNode(
