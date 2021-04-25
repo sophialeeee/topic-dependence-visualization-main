@@ -15,9 +15,6 @@ import {geoCircle} from 'd3';
 
 const colors = [];
 
-var useTopicEdit = 'yes';
-var useRelationEdit = 'yes';
-
 var Target = null;
 var selectNow = '';
 var optionNow = '';
@@ -66,9 +63,9 @@ export async function drawMap(
     selectTopic,//点击装配时的回调函数
     insertTopic,
     clickPath,//点击依赖时回调
-    // useTopicEdit: string,
-    // useRelationEdit: string,
-    // useFacetEdit: string
+    TopicEdit: string,
+    RelationEdit: string,
+    FacetEdit: string,
 ) {
     let {
         topics,
@@ -103,7 +100,7 @@ export async function drawMap(
     }
 
     function checkCloseMenu(occasion) {
-        if (occasion === 1 && useTopicEdit === 'yes') {
+        if (occasion === 1) {
             var selectTemp = selectNow;
             setTimeout(function() {
                 if (!optionNow && selectTemp === selectNow){
@@ -119,7 +116,7 @@ export async function drawMap(
                 }
             }, 3000);
         };
-        if (occasion === 2 && useRelationEdit === 'yes') {
+        if (occasion === 2) {
             var selectTemp = selectPathNow;
             setTimeout(function() {
                 if (!optionPathNow && selectTemp === selectPathNow){
@@ -156,36 +153,44 @@ export async function drawMap(
 
     function onClickRight(target, object){
         if (object === 'topic'){
-            d3.event.preventDefault();
-            selectNow = target.id;
-            const ListMenu = document.getElementById('ListMenu');
-            const CompleteName = document.getElementById('CompleteName');
-            d3.select(ListMenu)
-                .transition()
-                // .duration(500)
-                .style("opacity", 1)
-                .style("left", (d3.event.pageX + 20) + 'px')
-                .style("top", (d3.event.pageY + 20)+ 'px');
-            d3.select(CompleteName).html(topics[target.id]);
-            checkCloseMenu(1);
+            if (TopicEdit === 'yes'){
+                d3.event.preventDefault();
+                selectNow = target.id;
+                const ListMenu = document.getElementById('ListMenu');
+                const CompleteName = document.getElementById('CompleteName');
+                d3.select(ListMenu)
+                    .transition()
+                    // .duration(500)
+                    .style("opacity", 1)
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                d3.select(CompleteName).html(topics[target.id]);
+                checkCloseMenu(1);
+            }else{
+                d3.event.preventDefault();
+            }
         }
-        if (object === 'path'){
-            d3.event.preventDefault();
-            selectPathNow = topics[target.start] + topics[target.end];
-            const PathMenu = document.getElementById('PathMenu');
-            d3.select(PathMenu)
-                .transition()
-                // .duration(500)
-                .style("opacity", 1)
-                .style("left", (d3.event.pageX + 20) + 'px')
-                .style("top", (d3.event.pageY + 20)+ 'px');
-            d3.select(document.getElementById('CompleteRelation'))
-                .html('<b>' + topics[target.start] + '</b><br/>' + '到' + '<br/><b>' + topics[target.end] + '</b>');
-            checkCloseMenu(2);
+        if (object === 'path' && RelationEdit === 'yes'){
+            if (RelationEdit === 'yes'){
+                d3.event.preventDefault();
+                selectPathNow = topics[target.start] + topics[target.end];
+                const PathMenu = document.getElementById('PathMenu');
+                d3.select(PathMenu)
+                    .transition()
+                    // .duration(500)
+                    .style("opacity", 1)
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                d3.select(document.getElementById('CompleteRelation'))
+                    .html('<b>' + topics[target.start] + '</b><br/>' + '到' + '<br/><b>' + topics[target.end] + '</b>');
+                checkCloseMenu(2);
+            }else{
+                d3.event.preventDefault();
+            }
         }
     }
 
-    if (!document.getElementById('ListMenu') && useTopicEdit === 'yes') {
+    if (!document.getElementById('ListMenu')) {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
             .style('position', 'absolute')
@@ -388,7 +393,7 @@ export async function drawMap(
         //     .style('padding-top', '5px')
         //     .text("\u2715 关闭菜单s");
     }
-    if (!document.getElementById('PathMenu') && useRelationEdit === 'yes') {
+    if (!document.getElementById('PathMenu')) {
         d3.select('body').append('div')
             .attr('id', 'PathMenu')
             .style('position', 'absolute')
@@ -2041,7 +2046,7 @@ export async function drawMap(
                     treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
-                            drawTreeNumber(treeSvg, res.data.data, clickFacet, 'yes');
+                            drawTreeNumber(treeSvg, res.data.data, clickFacet,() =>{}, ()=>{}, FacetEdit);
                         }).catch(err => console.log(err))
                     }
                     const es = calcEdgeWithSelectedNode(
