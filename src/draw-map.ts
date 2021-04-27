@@ -1906,11 +1906,11 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    //nodeFirst(d.id, com);
+                    nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
-                    //nodeFirst(d.id, com);
+                    nodeFirst(d.id, com);
                     break;
             }
             clickTopic(d.id, topics[d.id]);
