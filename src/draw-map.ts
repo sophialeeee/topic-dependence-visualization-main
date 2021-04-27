@@ -66,6 +66,8 @@ export async function drawMap(
     TopicEdit: string,
     RelationEdit: string,
     FacetEdit: string,
+    onClickBranch,//删除分面回调
+    clickBranchAdd,//增加分面回调
 ) {
     let {
         topics,
@@ -614,7 +616,15 @@ export async function drawMap(
                     return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                 }
             })
-            .attr('y', d => d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]))
+            //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
+            .attr('y', d => {
+                const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                if (tmp > 24) {
+                    return d.cy + 12;
+                } else {
+                    return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                }
+            })
             .text(d => {
                 if (topics[d.id]) {
                     if (fucCheckLength(topics[d.id]) > 8) {
@@ -998,7 +1008,16 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
-                .attr('y', d => d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]))
+                //可能是这里
+                //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
+                .attr('y', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                    if (tmp > 24) {
+                        return d.cy + 12;
+                    } else {
+                        return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                    }
+                })
                 .text(d => {
                     if (topics[d.id]) {
                         if (fucCheckLength(topics[d.id]) > 8) {
@@ -1887,11 +1906,11 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    nodeFirst(d.id, com);
+                    //nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
-                    nodeFirst(d.id, com);
+                    //nodeFirst(d.id, com);
                     break;
             }
             clickTopic(d.id, topics[d.id]);
@@ -2046,7 +2065,7 @@ export async function drawMap(
                     treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
-                            drawTreeNumber(treeSvg, res.data.data, clickFacet,() =>{}, ()=>{}, FacetEdit);
+                            drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd,FacetEdit);
                         }).catch(err => console.log(err))
                     }
                     const es = calcEdgeWithSelectedNode(
@@ -2139,7 +2158,7 @@ export async function drawMap(
 
 export function judgementStringLengthWithChinese(str: string): number {
     let result = 0;
-    console.log("str", str);
+    //console.log("str", str);
     if (str) {
         for (let i = 0; i < str.length; i++) {
             if (/[a-z0-9\*\\\|\(\)\&\^\%\$\#\@\!\,\.\?\<\>\/]/.test(str[i])) {
