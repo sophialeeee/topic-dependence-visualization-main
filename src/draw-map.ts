@@ -86,7 +86,6 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
-
     // console.log('useFacetEdit', useFacetEdit)
     function fucCheckLength(strTemp) {
         var i, sum;
@@ -465,7 +464,6 @@ export async function drawMap(
     console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
-
     canvas
     .on('click', function (){
         console.log('Close Menu!');
@@ -1008,7 +1006,6 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
-                //可能是这里
                 //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
@@ -1241,6 +1238,20 @@ export async function drawMap(
                 // checkCloseMenu(1);
             });
         }
+        var state =localStorage.getItem('state')
+        if (state === '1'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comFirst(id);
+        }
+        else if (state === '2'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comSecond(id);
+        }
+        else if (state === '3'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            let com = JSON.parse(localStorage.getItem('nodeCom'));
+            nodeFirst(id,com);
+        }
         // 下面这个是点击整个大圆时的交互
         canvas.select('#com')
             .selectAll('circle')
@@ -1266,7 +1277,6 @@ export async function drawMap(
             // 判断在哪一层
             // 第0层是知识簇的一级状态
             // 增加恢复初始状态的交互
-
             switch (layer) {
                 case 0:
                     comFirst(d.id);
@@ -1275,7 +1285,6 @@ export async function drawMap(
                 case 1:
 
                     if (zoom.com === d.id) {
-                        layer = 2;
                         comSecond(d.id);
                     } else {
                         //点击其他回到初始状态
@@ -1354,7 +1363,8 @@ export async function drawMap(
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
-                .attr('display', 'inline');
+                .attr('display', 'inline')
+                .text(d =>topics[sequences[d.id][0]]);
             for (let com of nodes) {
                 const tmp = calcCircleLayout(
                     {x: com.cx, y: com.cy},
@@ -1466,6 +1476,9 @@ export async function drawMap(
                         ))
                     });
             }
+            
+            localStorage.removeItem('state');
+            localStorage.setItem('nodeId',id);  
         }
 
         /**
@@ -1623,6 +1636,9 @@ export async function drawMap(
                         ))
                     });
             }
+            //存储点击状态
+            localStorage.setItem('state','1');
+            localStorage.setItem('nodeId',id);   
         }
 
         /**
@@ -1879,6 +1895,9 @@ export async function drawMap(
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
             }
+            //存储点击状态
+            localStorage.setItem('state','2');
+            localStorage.setItem('nodeId',id); 
         }
 
         //@ts-ignore
@@ -1890,6 +1909,18 @@ export async function drawMap(
             treeSvg.style.visibility = 'hidden';
             zoom.topicId = d.id;
             zoom.com = com.id;
+            console.log("shisha",com);
+            console.log("dshisha",d);
+            // if (localStorage.getItem('flag')){
+            //     var d2 = d1;
+            //     var com2 = com1;
+            //     localStorage.setItem("d2",d2);
+            //     localStorage.setItem("com2",com2);
+            // }
+            // var d1 = JSON.stringify(d);
+            // var com1 = JSON.stringify(com);
+            // localStorage.setItem("d1",d1);
+            // localStorage.setItem("com1",com1);
             if (d.id === -1) {
                 // 默认状态下点击知识主题直接进入第二层
                 comSecond(com.id);
@@ -1906,10 +1937,12 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
+                    //布局二切换到分面树
                     nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
+                    //分面树之间切换
                     nodeFirst(d.id, com);
                     break;
             }
@@ -2140,7 +2173,11 @@ export async function drawMap(
 
                 }
             }
-
+            //存储最后一次点击状态
+            localStorage.setItem('state','3');
+            let nodeCom = JSON.stringify(c);
+            localStorage.setItem('nodeId',id); 
+            localStorage.setItem('nodeCom',nodeCom); 
         }
 
         //@ts-ignore

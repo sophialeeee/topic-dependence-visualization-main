@@ -16,12 +16,15 @@ const TopicEdit = 'yes';
 const RelationEdit = 'yes';
 const FacetEdit = 'yes';
 
-axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
-    .then(res => {
-        console.log("rs",res.data);
-        drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+// axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+//     .then(res => {
+//         console.log("rs",res.data);
+//         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
-}, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{});})
+// }, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{});})
+drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+
+}, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{})
 
 async function clickFacet(facetId: number) {
 
