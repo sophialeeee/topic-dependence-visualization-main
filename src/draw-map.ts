@@ -86,6 +86,7 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
+
     // console.log('useFacetEdit', useFacetEdit)
     console.log("statenow",localStorage.getItem('state'));
     function fucCheckLength(strTemp) {
@@ -467,15 +468,19 @@ export async function drawMap(
     const canvas = d3.select(svg);//整个认知关系的画布
     canvas
     .on('click', function (){
-        console.log('Close Menu!');
-        selectNow = '';
         d3.select(document.getElementById("ListMenu"))
             .transition().transition()
-            .duration(500)
+            .duration(300)
+            .style('width', '0px')
+            .style('height', '0px')
             .style("opacity", 0);
-        // (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
+        selectNow = '';
         optionNow = '';
-        // console.log((document.getElementById('inputNewTopic')));
+        d3.select(document.getElementById("PathMenu"))
+            .transition().transition()
+            .duration(300)
+            .style("opacity", 0);
+        selectPathNow = '';
     });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
     const divTooltip = d3.select('body').append('div')
@@ -1518,7 +1523,7 @@ export async function drawMap(
                         ))
                     });
             }
-            
+
             localStorage.removeItem('state');
             localStorage.setItem('nodeId',id);  
             
