@@ -5,7 +5,10 @@ import {drawMap} from "../src/draw-map";
 import {gaozhongshuxue} from "../gaozhongshuxue";
 // import {drawTree} from './module/facetTree';
 
-const domainName = '数据库应用';
+// const domainName = '八年级生物';
+// const domainName = '八年级英语';
+
+const domainName = '数据结构';
 // const learningPath = [-1,104882,104890,104894,104898,104941];
 const learningPath = [];
 const treesvg = document.getElementById('tree');
@@ -16,18 +19,23 @@ const TopicEdit = 'yes';
 const RelationEdit = 'yes';
 const FacetEdit = 'yes';
 
-// axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+    .then(res => {
+        console.log("rs",res.data);
+        drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+
+}, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{});})
+// drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
+
+// }, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{})
+
+async function clickFacet(facetId: number) {
+//     axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
 //     .then(res => {
 //         console.log("rs",res.data);
 //         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
 // }, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{});})
-drawMap(gaozhongshuxue, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
-
-}, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{})
-
-async function clickFacet(facetId: number) {
-
     try {
         const res = await axios.get('http://yotta.xjtushilei.com:8083/facet/getFacetNameAndParentFacetNameByFacetId', {
             params: {
