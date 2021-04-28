@@ -228,7 +228,7 @@ export function calcCircleLayout(
     }
     //对剩余的关系进行交叉边减少
     let sequence = reduceCrossing(filteredRelations);
-    console.log(sequence)
+    // console.log(sequence)
     // completing array
     const stateArr = [sequence];
     while (filterStack.length > 0) {
@@ -353,7 +353,7 @@ export function calcCircleLayoutWithoutReduceCrossing(
    } else {
        const count = sequence.length;
        const r = 0.8 * radius * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
-       const R = 1.6 * radius * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
+       const R = 1.2 * radius * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
        const angle = Math.PI * 2 / (count + 1);
        const nodes = [];
        const edges = [];
@@ -407,6 +407,8 @@ export function calcCircleLayoutWithoutReduceCrossing(
                }
            }
        }
+       console.log("nodes",nodes);
+       console.log("edges",edges);
        return {
            nodes,
            edges,
@@ -789,8 +791,8 @@ export function calNodeWithSelectedInTopicCrossCom(
             }
         }
     }
-    console.log("InTopic",Incom);
-    console.log("OutTopic",Outcom);
+    // console.log("InTopic",Incom);
+    // console.log("OutTopic",Outcom);
     return Incom;
 }
 export function calNodeWithSelecteOutTopicCrossCom(
