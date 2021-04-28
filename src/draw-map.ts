@@ -87,6 +87,7 @@ export async function drawMap(
             .style('padding', '1px 3px');
     }
     // console.log('useFacetEdit', useFacetEdit)
+    console.log("statenow",localStorage.getItem('state'));
     function fucCheckLength(strTemp) {
         var i, sum;
         sum = 0;
@@ -461,7 +462,7 @@ export async function drawMap(
     }
 
 
-    console.log("mapData",mapData);
+    // console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
     canvas
@@ -525,8 +526,6 @@ export async function drawMap(
     communityRelation = completeObj(communityRelation);
     const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
     const radiusx = svg.clientWidth / 2 ;
-    console.log("communityRelation", communityRelation)
-    console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
     if (Object.keys(communityRelation).length === 0) {
         const nodes0 = {r: radius, id: 0, cx: radiusx, cy: radius}
@@ -806,7 +805,7 @@ export async function drawMap(
         let nodePositions = {};
         // 绘制簇内信息
         for (let com of nodes) {
-            console.log("graph[com.id]", graph[com.id])
+            // console.log("graph[com.id]", graph[com.id])
             // 计算簇内布局
             const tmp = calcCircleLayout(
                 {x: com.cx, y: com.cy},
@@ -1103,7 +1102,7 @@ export async function drawMap(
                     onClickRight(d, 'path');
                 });
         }
-        console.log("hahahahah", sequences)
+        // console.log("hahahahah", sequences)
         canvas.append('g')
             .attr('id', 'comText')
             .selectAll('text')
@@ -1239,18 +1238,61 @@ export async function drawMap(
             });
         }
         var state =localStorage.getItem('state')
+        var invis = false;
         if (state === '1'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            // treeSvg.style.visibility = 'hidden';
             let id = parseInt(localStorage.getItem('nodeId'));
             comFirst(id);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
+                
+
         }
         else if (state === '2'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            // treeSvg.style.visibility = 'hidden';
             let id = parseInt(localStorage.getItem('nodeId'));
             comSecond(id);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
         }
         else if (state === '3'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            treeSvg.style.visibility = 'hidden';
             let id = parseInt(localStorage.getItem('nodeId'));
             let com = JSON.parse(localStorage.getItem('nodeCom'));
             nodeFirst(id,com);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                //treeSvg.style.visibility = 'visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
         }
         // 下面这个是点击整个大圆时的交互
         canvas.select('#com')
@@ -1351,7 +1393,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1479,6 +1521,8 @@ export async function drawMap(
             
             localStorage.removeItem('state');
             localStorage.setItem('nodeId',id);  
+            
+            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1513,7 +1557,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1560,7 +1604,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    // .style('visibility', invis ? 'hidden' : 'visible')
+                    // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                     ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
@@ -1639,6 +1684,21 @@ export async function drawMap(
             //存储点击状态
             localStorage.setItem('state','1');
             localStorage.setItem('nodeId',id);   
+            
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                // canvas.select('com2com')
+                // .selectAll('path')
+                // .display('none')
+                invis = false;
+                
+            }
+            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1763,7 +1823,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', 'inline');
-                    //buzhidaozheli
+
 
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
@@ -1898,6 +1958,16 @@ export async function drawMap(
             //存储点击状态
             localStorage.setItem('state','2');
             localStorage.setItem('nodeId',id); 
+            // svg.style.visibility = 'visible';
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                invis = false;
+            }
         }
 
         //@ts-ignore
@@ -1909,8 +1979,6 @@ export async function drawMap(
             treeSvg.style.visibility = 'hidden';
             zoom.topicId = d.id;
             zoom.com = com.id;
-            console.log("shisha",com);
-            console.log("dshisha",d);
             // if (localStorage.getItem('flag')){
             //     var d2 = d1;
             //     var com2 = com1;
@@ -2094,8 +2162,11 @@ export async function drawMap(
                     treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
                     treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
                     treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
-
-                    treeSvg.style.visibility = 'visible';
+                    if (invis){
+                    setTimeout(function(){treeSvg.style.visibility = 'visible';},600)}
+                    else {
+                        treeSvg.style.visibility = 'visible';
+                    }
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
                             drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd,FacetEdit);
@@ -2178,6 +2249,16 @@ export async function drawMap(
             let nodeCom = JSON.stringify(c);
             localStorage.setItem('nodeId',id); 
             localStorage.setItem('nodeCom',nodeCom); 
+            // svg.style.visibility = 'visible';
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                invis = false;
+            }
         }
 
         //@ts-ignore
