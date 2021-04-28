@@ -12,8 +12,8 @@ const treesvg = document.getElementById('tree');
 
 const svg = document.getElementById('map');
 
-const TopicEdit = 'yes';
-const RelationEdit = 'yes';
+const TopicEdit = 'no';
+const RelationEdit = 'no';
 const FacetEdit = 'no';
 
 axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
