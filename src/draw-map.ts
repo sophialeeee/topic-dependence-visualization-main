@@ -76,9 +76,6 @@ export async function drawMap(
         relationCrossCommunity,
         communityRelation,
     } = mapData;
-
-
-    
     if (!document.getElementById('facet-tree-tooltip')) {
         d3.select('body').append('div')
             .attr('id', 'facet-tree-tooltip')
@@ -112,12 +109,9 @@ export async function drawMap(
                     
                     d3.select(document.getElementById("ListMenu"))
                         .transition().transition()
-                        .duration(300)
-                        .style('width', '0px')
-                        .style('height', '0px')
+                        .duration(500)
                         .style("opacity", 0);
                     selectNow = '';
-                    optionNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // }
@@ -159,58 +153,17 @@ export async function drawMap(
             .style('font-size', '12px');
     }
 
-    function onSelectObject(object){
-        if (object === 'topic' && TopicEdit === 'yes'){
-            const MenuNotion = document.getElementById('MenuNotion');
-            d3.select(MenuNotion)
-                .style("left", svg.getBoundingClientRect().left + 10 + 'px')
-                .style("top", svg.getBoundingClientRect().top + 5 + 'px');
-            d3.select(MenuNotion)
-                .transition()
-                .duration(400)
-                .style('opacity', 1);
-        }
-        if (object === 'relation' && RelationEdit === 'yes'){
-            const MenuNotion = document.getElementById('MenuNotion');
-            d3.select(MenuNotion)
-                .style("left", svg.getBoundingClientRect().left + 10 + 'px')
-                .style("top", svg.getBoundingClientRect().top + 5 + 'px');
-            d3.select(MenuNotion)
-                .transition()
-                .duration(400)
-                .style('opacity', 1);
-        }
-
-    }
-
-    function offSelectObject(){
-            const MenuNotion = document.getElementById('MenuNotion');
-            d3.select(MenuNotion)
-                .transition()
-                .duration(300)
-                .style('opacity', 0);
-    }
-
     function onClickRight(target, object){
         if (object === 'topic'){
             if (TopicEdit === 'yes'){
                 d3.event.preventDefault();
+                selectNow = target.id;
                 const ListMenu = document.getElementById('ListMenu');
                 const CompleteName = document.getElementById('CompleteName');
-                selectNow = target.id;
                 d3.select(ListMenu)
                     .transition()
-                    .duration(200)
-                    .style('width', '130px')
-                    .style('height', '180px')
-
-
-                d3.select(ListMenu)
-                    .transition()
-                    .duration(200)
+                    // .duration(500)
                     .style("opacity", 1)
-                    .style('width', '130px')
-                    .style('height', '180px')
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 d3.select(CompleteName).html(topics[target.id]);
@@ -219,7 +172,7 @@ export async function drawMap(
                 d3.event.preventDefault();
             }
         }
-        if (object === 'relation'){
+        if (object === 'path' && RelationEdit === 'yes'){
             if (RelationEdit === 'yes'){
                 d3.event.preventDefault();
                 selectPathNow = topics[target.start] + topics[target.end];
@@ -238,8 +191,6 @@ export async function drawMap(
             }
         }
     }
-
-
 
     if (!document.getElementById('ListMenu')) {
         d3.select('body').append('div')
@@ -263,6 +214,7 @@ export async function drawMap(
                 checkCloseMenu(1);
             });
 
+
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
@@ -280,7 +232,7 @@ export async function drawMap(
             .attr('id', 'OptionDelete')
             .style('height', '22px')
             .style('width', '120px')
-            // .style('margin-left', '5px')
+            .style('margin-left', '5px')
             .style('margin-top', '10px')
             .style('border-radius', '15px')
             // .style('border', '2px solid white')
@@ -318,7 +270,7 @@ export async function drawMap(
             .attr('id', 'OptionAssemble')
             .style('height', '22px')
             .style('width', '120px')
-            // .style('margin-left', '5px')
+            .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('border-radius', '15px')
             .style('cursor', 'pointer')
@@ -352,7 +304,7 @@ export async function drawMap(
             .style('height', '22px')
             .style('width', '120px')
             .style('border-radius', '15px')
-            // .style('margin-left', '5px')
+            .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('cursor', 'pointer')
             .on('mouseover', function(){
@@ -393,7 +345,7 @@ export async function drawMap(
             .attr('id', 'OptionAdd')
             .style('height', '22px')
             .style('width', '120px')
-            // .style('margin-left', '5px')
+            .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('border-radius', '15px')
             .style('cursor', 'pointer')
@@ -508,33 +460,11 @@ export async function drawMap(
             .style('padding-top', '5px')
             .text("删除该认知关系");
     }
-    console.log('svgXY1', svg.getBoundingClientRect());
-    if (!document.getElementById('MenuNotion')) {
-        d3.select('body').append('div')
-            .attr('id', 'MenuNotion')
-            .style('position', 'absolute')
-            .style('opacity', 0)
-            .style('text-align', 'center')
-            .style('font-size', '10px')
-            .style('color', '#7B7B7B')
-            .style('padding', '4px')
-            .style('width', '150px')
-            .style('height', '30px')
-            .style('background', optionColor)
-            .style('border-radius', '20px')
-            .style('border', '2px solid #9D9D9D')
-            .style("left", svg.getBoundingClientRect().left + 10 + 'px')
-            .style("top", svg.getBoundingClientRect().top + 5 + 'px')
-            .text("鼠标右键显示菜单!")
-            ;
-    }
+
 
     console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
-
-    console.log('svgXY2', svg.getBoundingClientRect());
-
     canvas
     .on('click', function (){
         d3.select(document.getElementById("ListMenu"))
@@ -738,19 +668,17 @@ export async function drawMap(
                 // d3.select(this)
                 // .transition()
                 // .attr('stroke-width', 5);
-                onSelectObject('relation');
                 if (selectPathNow === ''){
                     d3.select(document.getElementById('PathMenu'))
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 }
             })
-            .on('mouseout', function(){
-                // d3.select(this)
-                // .transition()
-                // .attr('stroke-width', 2);
-                offSelectObject();
-            })
+            // .on('mouseout', function(){
+            //     d3.select(this)
+            //     .transition()
+            //     .attr('stroke-width', 2);
+            // })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
                 // // console.log("This is PathMenu Test!", d.start)
@@ -775,7 +703,7 @@ export async function drawMap(
                 // };
                 // checkCloseMenu(2);
                 Target = d;
-                onClickRight(d, 'relation');
+                onClickRight(d, 'path');
             });
 
         // 绘制认知路径
@@ -1083,7 +1011,6 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
-                //可能是这里
                 //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
@@ -1143,19 +1070,17 @@ export async function drawMap(
                     // d3.select(this)
                     // .transition()
                     // .attr('stroke-width', 5);
-                    onSelectObject('relation');
                     if (selectPathNow === ''){
                         d3.select(document.getElementById('PathMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
                 })
-                .on('mouseout', function(){
-                    // d3.select(this)
-                    // .transition()
-                    // .attr('stroke-width', 2);
-                    offSelectObject();
-                })
+                // .on('mouseout', function(){
+                //     d3.select(this)
+                //     .transition()
+                //     .attr('stroke-width', 2);
+                // })
                 .on('contextmenu', (d: any) => {
                     // d3.event.preventDefault();
                     // // console.log("This is PathMenu Test!", d.start)
@@ -1180,7 +1105,7 @@ export async function drawMap(
                     // };
                     // checkCloseMenu(2);
                     Target = d;
-                    onClickRight(d, 'relation');
+                    onClickRight(d, 'path');
                 });
         }
         console.log("hahahahah", sequences)
@@ -1236,17 +1161,6 @@ export async function drawMap(
             .selectAll('circle')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
-            .on('mouseover', function(){
-                if (selectNow === ''){
-                    d3.select(document.getElementById('ListMenu'))
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
-                }
-                onSelectObject('topic');
-            })
-            .on('mouseout', function(){
-                offSelectObject();
-            })
             .on('contextmenu', (d: any) => {
                 Target = d;
                 onClickRight(d, 'topic');
@@ -1289,17 +1203,6 @@ export async function drawMap(
             .selectAll('text')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
-            .on('mouseover', function(){
-                if (selectNow === ''){
-                    d3.select(document.getElementById('ListMenu'))
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
-                }
-                onSelectObject('topic');
-            })
-            .on('mouseout', function(){
-                offSelectObject();
-            })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
 
@@ -1340,6 +1243,20 @@ export async function drawMap(
                 // checkCloseMenu(1);
             });
         }
+        var state =localStorage.getItem('state')
+        if (state === '1'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comFirst(id);
+        }
+        else if (state === '2'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comSecond(id);
+        }
+        else if (state === '3'){
+            let id = parseInt(localStorage.getItem('nodeId'));
+            let com = JSON.parse(localStorage.getItem('nodeCom'));
+            nodeFirst(id,com);
+        }
         // 下面这个是点击整个大圆时的交互
         canvas.select('#com')
             .selectAll('circle')
@@ -1365,7 +1282,6 @@ export async function drawMap(
             // 判断在哪一层
             // 第0层是知识簇的一级状态
             // 增加恢复初始状态的交互
-
             switch (layer) {
                 case 0:
                     comFirst(d.id);
@@ -1374,7 +1290,6 @@ export async function drawMap(
                 case 1:
 
                     if (zoom.com === d.id) {
-                        layer = 2;
                         comSecond(d.id);
                     } else {
                         //点击其他回到初始状态
@@ -1453,7 +1368,8 @@ export async function drawMap(
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
-                .attr('display', 'inline');
+                .attr('display', 'inline')
+                .text(d =>topics[sequences[d.id][0]]);
             for (let com of nodes) {
                 const tmp = calcCircleLayout(
                     {x: com.cx, y: com.cy},
@@ -1565,6 +1481,9 @@ export async function drawMap(
                         ))
                     });
             }
+
+            localStorage.removeItem('state');
+            localStorage.setItem('nodeId',id);
         }
 
         /**
@@ -1722,6 +1641,9 @@ export async function drawMap(
                         ))
                     });
             }
+            //存储点击状态
+            localStorage.setItem('state','1');
+            localStorage.setItem('nodeId',id);
         }
 
         /**
@@ -1978,6 +1900,9 @@ export async function drawMap(
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
             }
+            //存储点击状态
+            localStorage.setItem('state','2');
+            localStorage.setItem('nodeId',id);
         }
 
         //@ts-ignore
@@ -1989,6 +1914,18 @@ export async function drawMap(
             treeSvg.style.visibility = 'hidden';
             zoom.topicId = d.id;
             zoom.com = com.id;
+            console.log("shisha",com);
+            console.log("dshisha",d);
+            // if (localStorage.getItem('flag')){
+            //     var d2 = d1;
+            //     var com2 = com1;
+            //     localStorage.setItem("d2",d2);
+            //     localStorage.setItem("com2",com2);
+            // }
+            // var d1 = JSON.stringify(d);
+            // var com1 = JSON.stringify(com);
+            // localStorage.setItem("d1",d1);
+            // localStorage.setItem("com1",com1);
             if (d.id === -1) {
                 // 默认状态下点击知识主题直接进入第二层
                 comSecond(com.id);
@@ -2005,11 +1942,13 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    //nodeFirst(d.id, com);
+                    //布局二切换到分面树
+                    nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
-                    //nodeFirst(d.id, com);
+                    //分面树之间切换
+                    nodeFirst(d.id, com);
                     break;
             }
             clickTopic(d.id, topics[d.id]);
@@ -2239,7 +2178,11 @@ export async function drawMap(
 
                 }
             }
-
+            //存储最后一次点击状态
+            localStorage.setItem('state','3');
+            let nodeCom = JSON.stringify(c);
+            localStorage.setItem('nodeId',id);
+            localStorage.setItem('nodeCom',nodeCom);
         }
 
         //@ts-ignore
