@@ -73,7 +73,8 @@ export async function drawMap(
         relationCrossCommunity,
         communityRelation,
     } = mapData;
-MenuDisplay = 'assemble';
+// MenuDisplay = 'assemble';
+// MenuDisplay = 'knowledge-forest';
     const PathMenuDisplay = MenuDisplay;
 
     if (!document.getElementById('facet-tree-tooltip')) {
