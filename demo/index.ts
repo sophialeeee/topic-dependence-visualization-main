@@ -15,7 +15,7 @@ const treesvg = document.getElementById('tree');
 
 const svg = document.getElementById('map');
 
-const MenuDisplay = 'facet-tree';
+const MenuDisplay = 'knowledge-forest';
 
 axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
     .then(res => {
