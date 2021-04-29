@@ -76,7 +76,7 @@ export async function drawMap(
     } = mapData;
 
     const PathMenuDisplay = MenuDisplay;
-    
+
     if (!document.getElementById('facet-tree-tooltip')) {
         d3.select('body').append('div')
             .attr('id', 'facet-tree-tooltip')
@@ -260,6 +260,36 @@ export async function drawMap(
         MenuHeight = '80px';
     }
 
+if(document.getElementById('ListMenu')){
+    d3.select(document.getElementById('ListMenu')).remove()
+    }
+if(document.getElementById('CompleteName')){
+    d3.select(document.getElementById('CompleteName')).remove()
+}
+if(document.getElementById('OptionDelete')){
+d3.select(document.getElementById('OptionDelete')).remove()
+}
+if(document.getElementById('OptionAssemble')){
+d3.select(document.getElementById('OptionAssemble')).remove()
+}
+if(document.getElementById('OptionSelect')){
+d3.select(document.getElementById('OptionSelect')).remove()
+}
+if(document.getElementById('OptionAdd')){
+d3.select(document.getElementById('OptionAdd')).remove()
+}
+if(document.getElementById('PathMenu')){
+d3.select(document.getElementById('PathMenu')).remove()
+}
+if(document.getElementById('CompleteRelation')){
+d3.select(document.getElementById('CompleteRelation')).remove()
+}
+if(document.getElementById('PathDelete')){
+d3.select(document.getElementById('PathDelete')).remove()
+}
+if(document.getElementById('MenuNotion')){
+d3.select(document.getElementById('MenuNotion')).remove()
+}
     if (!document.getElementById('ListMenu') && ['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0) {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
@@ -281,6 +311,7 @@ export async function drawMap(
                 optionNow = '';
                 checkCloseMenu(1);
             });
+
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -1095,8 +1126,6 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
-                //可能是这里
-                //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
                     if (tmp > 24) {
@@ -1365,12 +1394,12 @@ export async function drawMap(
                 svg.style.visibility='visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu")
+                console.log("shuchu") 
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
             },600);
-
+                
 
         }
         else if (state === '2'){
@@ -1384,7 +1413,7 @@ export async function drawMap(
                 svg.style.visibility='visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu")
+                console.log("shuchu") 
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
@@ -1403,7 +1432,7 @@ export async function drawMap(
                 //treeSvg.style.visibility = 'visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu")
+                console.log("shuchu") 
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
@@ -1442,6 +1471,7 @@ export async function drawMap(
                 case 1:
 
                     if (zoom.com === d.id) {
+                        layer = 2;
                         comSecond(d.id);
                     } else {
                         //点击其他回到初始状态
@@ -1635,8 +1665,8 @@ export async function drawMap(
             }
 
             localStorage.removeItem('state');
-            localStorage.setItem('nodeId',id);
-
+            localStorage.setItem('nodeId',id);  
+            
             // svg.style.visibility = 'visible';
         }
 
@@ -1672,7 +1702,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1719,7 +1749,8 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    // .style('visibility', invis ? 'hidden' : 'visible')
+                    // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                     ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
@@ -1797,8 +1828,8 @@ export async function drawMap(
             }
             //存储点击状态
             localStorage.setItem('state','1');
-            localStorage.setItem('nodeId',id);
-
+            localStorage.setItem('nodeId',id);   
+            
             if(invis === true){
                 svg.style.visibility = 'hidden';
                 d3.selectAll('path')
@@ -1810,7 +1841,7 @@ export async function drawMap(
                 // .selectAll('path')
                 // .display('none')
                 invis = false;
-
+                
             }
             // svg.style.visibility = 'visible';
         }
@@ -1937,7 +1968,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', 'inline');
-                    //buzhidaozheli
+
 
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
@@ -2071,7 +2102,7 @@ export async function drawMap(
             }
             //存储点击状态
             localStorage.setItem('state','2');
-            localStorage.setItem('nodeId',id);
+            localStorage.setItem('nodeId',id); 
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
@@ -2269,7 +2300,6 @@ export async function drawMap(
                     else {
                         treeSvg.style.visibility = 'visible';
                     }
-
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
                             drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd, MenuDisplay);
@@ -2350,8 +2380,8 @@ export async function drawMap(
             //存储最后一次点击状态
             localStorage.setItem('state','3');
             let nodeCom = JSON.stringify(c);
-            localStorage.setItem('nodeId',id);
-            localStorage.setItem('nodeCom',nodeCom);
+            localStorage.setItem('nodeId',id); 
+            localStorage.setItem('nodeCom',nodeCom); 
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
@@ -2365,10 +2395,14 @@ export async function drawMap(
         }
 
         //@ts-ignore
-        function clickRelation() {}
+        function clickRelation() {
+
+        }
 
         //@ts-ignore
-        function clickCanvas() {}
+        function clickCanvas() {
+
+        }
     }
 }
 
