@@ -89,7 +89,6 @@ export async function drawMap(
     }
 
     // console.log('useFacetEdit', useFacetEdit)
-    console.log("statenow",localStorage.getItem('state'));
     function fucCheckLength(strTemp) {
         var i, sum;
         sum = 0;
@@ -111,9 +110,12 @@ export async function drawMap(
                     
                     d3.select(document.getElementById("ListMenu"))
                         .transition().transition()
-                        .duration(500)
+                        .duration(300)
+                        .style('width', '0px')
+                        .style('height', '0px')
                         .style("opacity", 0);
                     selectNow = '';
+                    optionNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // }
@@ -193,7 +195,6 @@ export async function drawMap(
         if (object === 'topic'){
             if (['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0){
                 d3.event.preventDefault();
-                selectNow = target.id;
                 const ListMenu = document.getElementById('ListMenu');
                 const CompleteName = document.getElementById('CompleteName');
                 selectNow = target.id;
@@ -206,7 +207,7 @@ export async function drawMap(
 
                 d3.select(ListMenu)
                     .transition()
-                    // .duration(500)
+                    .duration(200)
                     .style("opacity", 1)
                     .style('width', MenuWidth)
                     .style('height', MenuHeight)
@@ -257,37 +258,37 @@ export async function drawMap(
         MenuWidth = '130px';
         MenuHeight = '80px';
     }
-    if (document.getElementById('ListMenu')){
-        d3.select(document.getElementById('ListMenu')).remove()
-    }
-    if (document.getElementById('CompleteName')){
-        d3.select(document.getElementById('CompleteName')).remove()
-    }
-    if (document.getElementById('OptionDelete')){
-        d3.select(document.getElementById('OptionDelete')).remove()
-    }
-    if (document.getElementById('OptionAssemble')){
-        d3.select(document.getElementById('OptionAssemble')).remove()
-    }
-    if (document.getElementById('OptionSelect')){
-        d3.select(document.getElementById('OptionSelect')).remove()
-    }
-    if (document.getElementById('OptionAdd')){
-        d3.select(document.getElementById('OptionAdd')).remove()
-    }
-    if (document.getElementById('PathMenu')){
-        d3.select(document.getElementById('PathMenu')).remove()
-    }
-    if (document.getElementById('CompleteRelation')){
-        d3.select(document.getElementById('CompleteRelation')).remove()
-    }
-    if (document.getElementById('PathDelete')){
-        d3.select(document.getElementById('PathDelete')).remove()
-    }
-    if (document.getElementById('MenuNotion')){
-        d3.select(document.getElementById('MenuNotion')).remove()
-    }
 
+    if (document.getElementById('ListMenu')){
+            d3.select(document.getElementById('ListMenu')).remove()
+        }
+    if (document.getElementById('CompleteName')){
+        d3.select(document.getElementById('CompleteName')).remove()
+    }
+    if (document.getElementById('OptionDelete')){
+        d3.select(document.getElementById('OptionDelete')).remove()
+    }
+    if (document.getElementById('OptionAssemble')){
+        d3.select(document.getElementById('OptionAssemble')).remove()
+    }
+    if (document.getElementById('OptionSelect')){
+        d3.select(document.getElementById('OptionSelect')).remove()
+    }
+    if (document.getElementById('OptionAdd')){
+        d3.select(document.getElementById('OptionAdd')).remove()
+    }
+    if (document.getElementById('PathMenu')){
+        d3.select(document.getElementById('PathMenu')).remove()
+    }
+    if (document.getElementById('CompleteRelation')){
+        d3.select(document.getElementById('CompleteRelation')).remove()
+    }
+    if (document.getElementById('PathDelete')){
+        d3.select(document.getElementById('PathDelete')).remove()
+    }
+    if (document.getElementById('MenuNotion')){
+        d3.select(document.getElementById('MenuNotion')).remove()
+    }
     if (!document.getElementById('ListMenu') && ['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0) {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
@@ -309,7 +310,6 @@ export async function drawMap(
                 optionNow = '';
                 checkCloseMenu(1);
             });
-
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -408,7 +408,7 @@ export async function drawMap(
             .style('height', '22px')
             .style('width', MenuWidth)
             .style('border-radius', '15px')
-            .style('margin-left', '5px')
+            // .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('cursor', 'pointer')
             .on('mouseover', function(){
@@ -568,10 +568,12 @@ export async function drawMap(
             ;
     }
 
-
-    // console.log("mapData",mapData);
+    console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
+
+    console.log('svgXY2', svg.getBoundingClientRect());
+
     canvas
     .on('click', function (){
         d3.select(document.getElementById("ListMenu"))
@@ -639,6 +641,8 @@ export async function drawMap(
     communityRelation = completeObj(communityRelation);
     const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
     const radiusx = svg.clientWidth / 2 ;
+    console.log("communityRelation", communityRelation)
+    console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
     if (Object.keys(communityRelation).length === 0) {
         const nodes0 = {r: radius, id: 0, cx: radiusx, cy: radius}
@@ -775,17 +779,19 @@ export async function drawMap(
                 // d3.select(this)
                 // .transition()
                 // .attr('stroke-width', 5);
+                onSelectObject('relation');
                 if (selectPathNow === ''){
                     d3.select(document.getElementById('PathMenu'))
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 }
             })
-            // .on('mouseout', function(){
-            //     d3.select(this)
-            //     .transition()
-            //     .attr('stroke-width', 2);
-            // })
+            .on('mouseout', function(){
+                // d3.select(this)
+                // .transition()
+                // .attr('stroke-width', 2);
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
                 // // console.log("This is PathMenu Test!", d.start)
@@ -810,7 +816,7 @@ export async function drawMap(
                 // };
                 // checkCloseMenu(2);
                 Target = d;
-                onClickRight(d, 'path');
+                onClickRight(d, 'relation');
             });
 
         // 绘制认知路径
@@ -918,7 +924,7 @@ export async function drawMap(
         let nodePositions = {};
         // 绘制簇内信息
         for (let com of nodes) {
-            // console.log("graph[com.id]", graph[com.id])
+            console.log("graph[com.id]", graph[com.id])
             // 计算簇内布局
             const tmp = calcCircleLayout(
                 {x: com.cx, y: com.cy},
@@ -1118,6 +1124,7 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
+                //可能是这里
                 //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
@@ -1177,17 +1184,19 @@ export async function drawMap(
                     // d3.select(this)
                     // .transition()
                     // .attr('stroke-width', 5);
+                    onSelectObject('relation');
                     if (selectPathNow === ''){
                         d3.select(document.getElementById('PathMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
                 })
-                // .on('mouseout', function(){
-                //     d3.select(this)
-                //     .transition()
-                //     .attr('stroke-width', 2);
-                // })
+                .on('mouseout', function(){
+                    // d3.select(this)
+                    // .transition()
+                    // .attr('stroke-width', 2);
+                    offSelectObject();
+                })
                 .on('contextmenu', (d: any) => {
                     // d3.event.preventDefault();
                     // // console.log("This is PathMenu Test!", d.start)
@@ -1212,10 +1221,10 @@ export async function drawMap(
                     // };
                     // checkCloseMenu(2);
                     Target = d;
-                    onClickRight(d, 'path');
+                    onClickRight(d, 'relation');
                 });
         }
-        // console.log("hahahahah", sequences)
+        console.log("hahahahah", sequences)
         canvas.append('g')
             .attr('id', 'comText')
             .selectAll('text')
@@ -1268,6 +1277,17 @@ export async function drawMap(
             .selectAll('circle')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
+            .on('mouseover', function(){
+                if (selectNow === ''){
+                    d3.select(document.getElementById('ListMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
+                onSelectObject('topic');
+            })
+            .on('mouseout', function(){
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 Target = d;
                 onClickRight(d, 'topic');
@@ -1310,6 +1330,17 @@ export async function drawMap(
             .selectAll('text')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
+            .on('mouseover', function(){
+                if (selectNow === ''){
+                    d3.select(document.getElementById('ListMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
+                onSelectObject('topic');
+            })
+            .on('mouseout', function(){
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
 
@@ -1350,63 +1381,6 @@ export async function drawMap(
                 // checkCloseMenu(1);
             });
         }
-        var state =localStorage.getItem('state')
-        var invis = false;
-        if (state === '1'){
-            invis = true;
-            svg.style.visibility = 'hidden';
-            // treeSvg.style.visibility = 'hidden';
-            let id = parseInt(localStorage.getItem('nodeId'));
-            comFirst(id);
-            // svg.style.visibility = 'visible';
-            setTimeout(function(){
-                svg.style.visibility='visible';
-                canvas.selectAll('path')
-                .style('visibility', 'visible');
-                console.log("shuchu") 
-                canvas.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'visible');
-            },600);
-                
-
-        }
-        else if (state === '2'){
-            invis = true;
-            svg.style.visibility = 'hidden';
-            // treeSvg.style.visibility = 'hidden';
-            let id = parseInt(localStorage.getItem('nodeId'));
-            comSecond(id);
-            // svg.style.visibility = 'visible';
-            setTimeout(function(){
-                svg.style.visibility='visible';
-                canvas.selectAll('path')
-                .style('visibility', 'visible');
-                console.log("shuchu") 
-                canvas.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'visible');
-            },600);
-        }
-        else if (state === '3'){
-            invis = true;
-            svg.style.visibility = 'hidden';
-            treeSvg.style.visibility = 'hidden';
-            let id = parseInt(localStorage.getItem('nodeId'));
-            let com = JSON.parse(localStorage.getItem('nodeCom'));
-            nodeFirst(id,com);
-            // svg.style.visibility = 'visible';
-            setTimeout(function(){
-                svg.style.visibility='visible';
-                //treeSvg.style.visibility = 'visible';
-                canvas.selectAll('path')
-                .style('visibility', 'visible');
-                console.log("shuchu") 
-                canvas.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'visible');
-            },600);
-        }
         // 下面这个是点击整个大圆时的交互
         canvas.select('#com')
             .selectAll('circle')
@@ -1432,6 +1406,7 @@ export async function drawMap(
             // 判断在哪一层
             // 第0层是知识簇的一级状态
             // 增加恢复初始状态的交互
+
             switch (layer) {
                 case 0:
                     comFirst(d.id);
@@ -1440,6 +1415,7 @@ export async function drawMap(
                 case 1:
 
                     if (zoom.com === d.id) {
+                        layer = 2;
                         comSecond(d.id);
                     } else {
                         //点击其他回到初始状态
@@ -1506,7 +1482,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1518,8 +1494,7 @@ export async function drawMap(
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
-                .attr('display', 'inline')
-                .text(d =>topics[sequences[d.id][0]]);
+                .attr('display', 'inline');
             for (let com of nodes) {
                 const tmp = calcCircleLayout(
                     {x: com.cx, y: com.cy},
@@ -1631,11 +1606,6 @@ export async function drawMap(
                         ))
                     });
             }
-
-            localStorage.removeItem('state');
-            localStorage.setItem('nodeId',id);  
-            
-            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1670,7 +1640,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1717,8 +1687,7 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    // .style('visibility', invis ? 'hidden' : 'visible')
-                    // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                     ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
@@ -1794,24 +1763,6 @@ export async function drawMap(
                         ))
                     });
             }
-            //存储点击状态
-            localStorage.setItem('state','1');
-            localStorage.setItem('nodeId',id);   
-            
-            if(invis === true){
-                svg.style.visibility = 'hidden';
-                d3.selectAll('path')
-                .style('visibility', 'hidden');
-                d3.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'hidden');
-                // canvas.select('com2com')
-                // .selectAll('path')
-                // .display('none')
-                invis = false;
-                
-            }
-            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1936,7 +1887,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', 'inline');
-
+                    //buzhidaozheli
 
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
@@ -2068,19 +2019,6 @@ export async function drawMap(
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
             }
-            //存储点击状态
-            localStorage.setItem('state','2');
-            localStorage.setItem('nodeId',id); 
-            // svg.style.visibility = 'visible';
-            if(invis === true){
-                svg.style.visibility = 'hidden';
-                d3.selectAll('path')
-                .style('visibility', 'hidden');
-                d3.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'hidden');
-                invis = false;
-            }
         }
 
         //@ts-ignore
@@ -2092,16 +2030,6 @@ export async function drawMap(
             treeSvg.style.visibility = 'hidden';
             zoom.topicId = d.id;
             zoom.com = com.id;
-            // if (localStorage.getItem('flag')){
-            //     var d2 = d1;
-            //     var com2 = com1;
-            //     localStorage.setItem("d2",d2);
-            //     localStorage.setItem("com2",com2);
-            // }
-            // var d1 = JSON.stringify(d);
-            // var com1 = JSON.stringify(com);
-            // localStorage.setItem("d1",d1);
-            // localStorage.setItem("com1",com1);
             if (d.id === -1) {
                 // 默认状态下点击知识主题直接进入第二层
                 comSecond(com.id);
@@ -2118,12 +2046,10 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    //布局二切换到分面树
                     nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
-                    //分面树之间切换
                     nodeFirst(d.id, com);
                     break;
             }
@@ -2275,11 +2201,8 @@ export async function drawMap(
                     treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
                     treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
                     treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
-                    if (invis){
-                    setTimeout(function(){treeSvg.style.visibility = 'visible';},600)}
-                    else {
-                        treeSvg.style.visibility = 'visible';
-                    }
+
+                    treeSvg.style.visibility = 'visible';
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
                             drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd, MenuDisplay);
@@ -2357,21 +2280,7 @@ export async function drawMap(
 
                 }
             }
-            //存储最后一次点击状态
-            localStorage.setItem('state','3');
-            let nodeCom = JSON.stringify(c);
-            localStorage.setItem('nodeId',id); 
-            localStorage.setItem('nodeCom',nodeCom); 
-            // svg.style.visibility = 'visible';
-            if(invis === true){
-                svg.style.visibility = 'hidden';
-                d3.selectAll('path')
-                .style('visibility', 'hidden');
-                d3.select('#com2com')
-                .selectAll('path')
-                .style('visibility', 'hidden');
-                invis = false;
-            }
+
         }
 
         //@ts-ignore
