@@ -12,7 +12,6 @@ import {
     calcLinkSourceTargetBetweenCircles
 } from "./circle-layout";
 import {geoCircle} from 'd3';
-
 const colors = [];
 
 var Target = null;
@@ -87,6 +86,10 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
+    if(localStorage.getItem('domain') !== domainName){
+        localStorage.removeItem('state');
+    }
+    localStorage.setItem('domain',domainName);
 
     // console.log('useFacetEdit', useFacetEdit)
     console.log("statenow",localStorage.getItem('state'));

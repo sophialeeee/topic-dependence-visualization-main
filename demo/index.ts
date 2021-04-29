@@ -22,7 +22,12 @@ axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
 }, ()=>{},() => {},()=>{},(a,b)=>{}, MenuDisplay,() => {},()=>{});})
 
 async function clickFacet(facetId: number) {
+//     axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+//     .then(res => {
+//         console.log("rs",res.data);
+//         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
 
+// }, ()=>{},() => {},()=>{},(a,b)=>{}, TopicEdit, RelationEdit, FacetEdit,() => {},()=>{});})
     try {
         const res = await axios.get('http://yotta.xjtushilei.com:8083/facet/getFacetNameAndParentFacetNameByFacetId', {
             params: {
