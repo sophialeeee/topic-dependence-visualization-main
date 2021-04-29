@@ -114,11 +114,15 @@ export async function drawMap(
                 if (!optionNow && selectTemp === selectNow){
                     
                     d3.select(document.getElementById("ListMenu"))
-                        .transition().transition()
+                        .transition()
                         .duration(300)
                         .style('width', '0px')
                         .style('height', '0px')
                         .style("opacity", 0);
+                    setTimeout(function(){
+                        d3.select(document.getElementById("ListMenu"))
+                        .style('display', 'none');
+                    },300)
                     selectNow = '';
                     optionNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
@@ -133,11 +137,16 @@ export async function drawMap(
                 if (!optionPathNow && selectTemp === selectPathNow){
                     
                     d3.select(document.getElementById("PathMenu"))
-                        .transition().transition()
+                        .transition()
                         .duration(300)
                         .style('width', '0px')
                         .style('height', '0px')
                         .style("opacity", 0);
+
+                    setTimeout(function(){
+                        d3.select(document.getElementById("PathMenu"))
+                        .style('display', 'none');
+                    },400)
                     selectPathNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
@@ -202,6 +211,8 @@ export async function drawMap(
                 d3.event.preventDefault();
                 const ListMenu = document.getElementById('ListMenu');
                 const CompleteName = document.getElementById('CompleteName');
+                d3.select(ListMenu)
+                    .style('display', 'block');
                 selectNow = target.id;
                 d3.select(ListMenu)
                     .transition()
@@ -229,6 +240,8 @@ export async function drawMap(
                 d3.event.preventDefault();
                 selectPathNow = topics[target.start] + topics[target.end];
                 const PathMenu = document.getElementById('PathMenu');
+                d3.select(PathMenu)
+                    .style('display', 'block');
                 d3.select(PathMenu)
                     .transition()
                     .duration(200)
@@ -583,7 +596,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
     canvas
     .on('click', function (){
         d3.select(document.getElementById("ListMenu"))
-            .transition().transition()
+            .transition()
             .duration(300)
             .style('width', '0px')
             .style('height', '0px')
@@ -591,12 +604,18 @@ d3.select(document.getElementById('MenuNotion')).remove()
         selectNow = '';
         optionNow = '';
         d3.select(document.getElementById("PathMenu"))
-            .transition().transition()
+            .transition()
             .duration(300)
             .style('width', '0px')
             .style('height', '0px')
             .style("opacity", 0);
         selectPathNow = '';
+        setTimeout(function(){
+            d3.select(document.getElementById("ListMenu"))
+            .style('display', 'none');
+            d3.select(document.getElementById("PathMenu"))
+            .style('display', 'none');
+        },500)
     });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
     const divTooltip = d3.select('body').append('div')
