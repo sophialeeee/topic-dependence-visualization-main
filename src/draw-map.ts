@@ -73,7 +73,8 @@ export async function drawMap(
         relationCrossCommunity,
         communityRelation,
     } = mapData;
-
+// MenuDisplay = 'assemble';
+// MenuDisplay = 'knowledge-forest';
     const PathMenuDisplay = MenuDisplay;
 
     if (!document.getElementById('facet-tree-tooltip')) {
@@ -2143,11 +2144,15 @@ d3.select(document.getElementById('MenuNotion')).remove()
                     layer = 2;
                     break;
                 case 2:
-                    nodeFirst(d.id, com);
-                    layer = 3;
+                    if (MenuDisplay !== 'assemble')
+                    {nodeFirst(d.id, com);}
+                    else
+                    {layer = 3;}
+                    
                     break;
                 case 3:
-                    nodeFirst(d.id, com);
+                    if (MenuDisplay !== 'assemble')
+                    {nodeFirst(d.id, com);}
                     break;
             }
             clickTopic(d.id, topics[d.id]);
