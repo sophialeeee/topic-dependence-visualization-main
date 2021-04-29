@@ -63,9 +63,7 @@ export async function drawMap(
     selectTopic,//点击装配时的回调函数
     insertTopic,
     clickPath,//点击依赖时回调
-    TopicEdit: string,
-    RelationEdit: string,
-    FacetEdit: string,
+    MenuDisplay: string, // 填写页面名称 ： 'knowledge-forest', 'facet-tree', 'relation', 'assemble', 不需要菜单的页面写 'none' 就行
     onClickBranch,//删除分面回调
     clickBranchAdd,//增加分面回调
 ) {
@@ -76,6 +74,9 @@ export async function drawMap(
         relationCrossCommunity,
         communityRelation,
     } = mapData;
+
+    const PathMenuDisplay = MenuDisplay;
+    
     if (!document.getElementById('facet-tree-tooltip')) {
         d3.select('body').append('div')
             .attr('id', 'facet-tree-tooltip')
@@ -110,9 +111,12 @@ export async function drawMap(
                     
                     d3.select(document.getElementById("ListMenu"))
                         .transition().transition()
-                        .duration(500)
+                        .duration(300)
+                        .style('width', '0px')
+                        .style('height', '0px')
                         .style("opacity", 0);
                     selectNow = '';
+                    optionNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
                     // }
@@ -126,7 +130,9 @@ export async function drawMap(
                     
                     d3.select(document.getElementById("PathMenu"))
                         .transition().transition()
-                        .duration(500)
+                        .duration(300)
+                        .style('width', '0px')
+                        .style('height', '0px')
                         .style("opacity", 0);
                     selectPathNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
@@ -154,17 +160,58 @@ export async function drawMap(
             .style('font-size', '12px');
     }
 
+    function onSelectObject(object){
+        if (object === 'topic' && ['knowledge-forest', 'relation', 'assemble'].indexOf(MenuDisplay) >=0){
+            const MenuNotion = document.getElementById('MenuNotion');
+            d3.select(MenuNotion)
+                .style("left", svg.getBoundingClientRect().left + 10 + 'px')
+                .style("top", svg.getBoundingClientRect().top + 5 + 'px');
+            d3.select(MenuNotion)
+                .transition()
+                .duration(400)
+                .style('opacity', 1);
+        }
+        if (object === 'relation' && ['knowledge-forest', 'relation'].indexOf(PathMenuDisplay) >=0){
+            const MenuNotion = document.getElementById('MenuNotion');
+            d3.select(MenuNotion)
+                .style("left", svg.getBoundingClientRect().left + 10 + 'px')
+                .style("top", svg.getBoundingClientRect().top + 5 + 'px');
+            d3.select(MenuNotion)
+                .transition()
+                .duration(400)
+                .style('opacity', 1);
+        }
+
+    }
+
+    function offSelectObject(){
+            const MenuNotion = document.getElementById('MenuNotion');
+            d3.select(MenuNotion)
+                .transition()
+                .duration(300)
+                .style('opacity', 0);
+    }
+
     function onClickRight(target, object){
         if (object === 'topic'){
-            if (TopicEdit === 'yes'){
+            if (['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0){
                 d3.event.preventDefault();
-                selectNow = target.id;
                 const ListMenu = document.getElementById('ListMenu');
                 const CompleteName = document.getElementById('CompleteName');
+                selectNow = target.id;
                 d3.select(ListMenu)
                     .transition()
-                    // .duration(500)
+                    .duration(200)
+                    .style('width', MenuWidth)
+                    .style('height', MenuHeight)
+
+
+                d3.select(ListMenu)
+                    .transition()
+                    .duration(200)
                     .style("opacity", 1)
+                    .style('width', MenuWidth)
+                    .style('height', MenuHeight)
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 d3.select(CompleteName).html(topics[target.id]);
@@ -173,15 +220,23 @@ export async function drawMap(
                 d3.event.preventDefault();
             }
         }
-        if (object === 'path' && RelationEdit === 'yes'){
-            if (RelationEdit === 'yes'){
+        if (object === 'relation'){
+            if (['knowledge-forest', 'relation'].indexOf(MenuDisplay) >=0 ){
                 d3.event.preventDefault();
                 selectPathNow = topics[target.start] + topics[target.end];
                 const PathMenu = document.getElementById('PathMenu');
                 d3.select(PathMenu)
                     .transition()
+                    .duration(200)
+                    .style('width', '120px')
+                    .style('height', '110px');
+
+                d3.select(PathMenu)
+                    .transition()
                     // .duration(500)
                     .style("opacity", 1)
+                    .style('width', '120px')
+                    .style('height', '110px')
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 d3.select(document.getElementById('CompleteRelation'))
@@ -192,8 +247,20 @@ export async function drawMap(
             }
         }
     }
+    var MenuWidth = '';
+    var MenuHeight = '';
+    if (MenuDisplay === 'knowledge-forest'){
+        MenuWidth = '130px';
+        MenuHeight = '180px';
+    }else if (MenuDisplay === 'relation'){
+        MenuWidth = '130px';
+        MenuHeight = '80px';
+    }else if (MenuDisplay === 'assemble'){
+        MenuWidth = '130px';
+        MenuHeight = '80px';
+    }
 
-    if (!document.getElementById('ListMenu')) {
+    if (!document.getElementById('ListMenu') && ['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0) {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
             .style('position', 'absolute')
@@ -201,11 +268,11 @@ export async function drawMap(
             .style('text-align', 'center')
             .style('font-size', '12px')
             .style('color', 'black')
-            .style('padding', '5px 3px')
-            .style('width', '130px')
-            .style('height', '180px')
+            .style('padding-top', '5px')
+            .style('width', '0px')
+            .style('height', '0px')
             .style('background', optionColor)
-            .style('border-radius', '10px')
+            .style('border-radius', '8px')
             .style('border', '2px solid black')
             .on('mouseover', function() {
                 optionNow = 'yes';
@@ -215,11 +282,13 @@ export async function drawMap(
                 checkCloseMenu(1);
             });
 
-
         d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'CompleteName')
-            .style('height', '24px')
+            .style('color', '#9D9D9D')
+            .style('font-weight', 'bold')
+            .style('width', MenuWidth)
+            .style('height', '30px')
             .style('padding-top', '5px')
             .on('mouseover', function() {
                 optionNow = 'yes';
@@ -227,13 +296,13 @@ export async function drawMap(
             .on('mouseout', function() {
                 // checkCloseMenu();
             });
-
-        d3.select(document.getElementById('ListMenu'))
+        if (['knowledge-forest'].indexOf(MenuDisplay) >=0 ){
+            d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionDelete')
             .style('height', '22px')
-            .style('width', '120px')
-            .style('margin-left', '5px')
+            .style('width', MenuWidth)
+            // .style('margin-left', '5px')
             .style('margin-top', '10px')
             .style('border-radius', '15px')
             // .style('border', '2px solid white')
@@ -265,13 +334,15 @@ export async function drawMap(
             
             .style('padding-top', '5px')
             .text("删除该主题");
+        }
 
-        d3.select(document.getElementById('ListMenu'))
+        if (['knowledge-forest', 'assemble'].indexOf(MenuDisplay) >=0 ){
+            d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAssemble')
             .style('height', '22px')
-            .style('width', '120px')
-            .style('margin-left', '5px')
+            .style('width', MenuWidth)
+            // .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('border-radius', '15px')
             .style('cursor', 'pointer')
@@ -299,13 +370,16 @@ export async function drawMap(
             })
             .style('padding-top', '5px')
             .text("装配该主题");
-        d3.select(document.getElementById('ListMenu'))
+        }
+
+        if (['knowledge-forest', 'relation'].indexOf(MenuDisplay) >=0 ){
+            d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionSelect')
             .style('height', '22px')
-            .style('width', '120px')
+            .style('width', MenuWidth)
             .style('border-radius', '15px')
-            .style('margin-left', '5px')
+            // .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('cursor', 'pointer')
             .on('mouseover', function(){
@@ -335,18 +409,20 @@ export async function drawMap(
             })
             .style('padding-top', '5px')
             .text("添加依赖关系");
+        }
         // const inputNewTopic = d3.select(document.getElementById('ListMenu'))
         //     .append('input')
         //     .attr('id', 'inputNewTopic')
         //     .attr('value', '')
         //     .attr('style', 'margin-top: 10px; margin-bottom: 5px; height: 18px; width: 120px')
         //     .attr('opacity', 0.2);
-        d3.select(document.getElementById('ListMenu'))
+        if (['knowledge-forest'].indexOf(MenuDisplay) >=0 ){
+            d3.select(document.getElementById('ListMenu'))
             .append('div')
             .attr('id', 'OptionAdd')
             .style('height', '22px')
-            .style('width', '120px')
-            .style('margin-left', '5px')
+            .style('width', MenuWidth)
+            // .style('margin-left', '5px')
             .style('margin-top', '5px')
             .style('border-radius', '15px')
             .style('cursor', 'pointer')
@@ -372,31 +448,10 @@ export async function drawMap(
                 console.log("insertTopic called!");
                 insertTopic();
             });
-        // d3.select(document.getElementById('ListMenu'))
-        //     .append('div')
-        //     .attr('id', 'CloseMenu')
-        //     .style('height', '25px')
-        //     // .style('margin-top', '5px')
-        //     .on('mouseover', function(){
-        //         optionNow = 'yes';
-        //         d3.select(document.getElementById('CloseMenu'))
-        //         .transition()
-        //         .duration(300)
-        //         .style("background", optionSelectedColor);
-        //     })
-        //     .on('mouseout', function(){
-        //         optionNow = '';
-        //         d3.select(document.getElementById('CloseMenu'))
-        //         .transition()
-        //         .duration(300)
-        //         .style("background", optionColor);
-        //     })
-        //     // .style('background', 'blue')
-        //     // .append('p')
-        //     .style('padding-top', '5px')
-        //     .text("\u2715 关闭菜单s");
+        }
     }
-    if (!document.getElementById('PathMenu')) {
+
+    if (!document.getElementById('PathMenu') && ['knowledge-forest', 'relation'].indexOf(PathMenuDisplay) >=0 ) {
         d3.select('body').append('div')
             .attr('id', 'PathMenu')
             .style('position', 'absolute')
@@ -423,6 +478,7 @@ export async function drawMap(
             .append('div')
             .attr('id', 'CompleteRelation')
             .style('height', '50px')
+            .style('color', '#9D9D9D')
             .style('padding-top', '10px')
             .on('mouseover', function() {
                 optionPathNow = 'yes';
@@ -461,11 +517,34 @@ export async function drawMap(
             .style('padding-top', '5px')
             .text("删除该认知关系");
     }
+    // console.log('svgXY1', svg.getBoundingClientRect());
 
+    if (!document.getElementById('MenuNotion')) {
+        d3.select('body').append('div')
+            .attr('id', 'MenuNotion')
+            .style('position', 'absolute')
+            .style('opacity', 0)
+            .style('text-align', 'center')
+            .style('font-size', '10px')
+            .style('color', '#7B7B7B')
+            .style('padding', '4px')
+            .style('width', '150px')
+            .style('height', '30px')
+            .style('background', optionColor)
+            .style('border-radius', '20px')
+            .style('border', '2px solid #9D9D9D')
+            .style("left", svg.getBoundingClientRect().left + 10 + 'px')
+            .style("top", svg.getBoundingClientRect().top + 5 + 'px')
+            .text("鼠标右键显示菜单!")
+            ;
+    }
 
-    // console.log("mapData",mapData);
+    console.log("mapData",mapData);
     let layer = 0;
     const canvas = d3.select(svg);//整个认知关系的画布
+
+    console.log('svgXY2', svg.getBoundingClientRect());
+
     canvas
     .on('click', function (){
         d3.select(document.getElementById("ListMenu"))
@@ -479,6 +558,8 @@ export async function drawMap(
         d3.select(document.getElementById("PathMenu"))
             .transition().transition()
             .duration(300)
+            .style('width', '0px')
+            .style('height', '0px')
             .style("opacity", 0);
         selectPathNow = '';
     });
@@ -531,6 +612,8 @@ export async function drawMap(
     communityRelation = completeObj(communityRelation);
     const radius = svg.clientHeight < svg.clientWidth ? svg.clientHeight / 2 - 24 : svg.clientWidth / 2 - 24;
     const radiusx = svg.clientWidth / 2 ;
+    console.log("communityRelation", communityRelation)
+    console.log(Object.keys(communityRelation).length)
     // 处理只有一个簇的情况
     if (Object.keys(communityRelation).length === 0) {
         const nodes0 = {r: radius, id: 0, cx: radiusx, cy: radius}
@@ -667,17 +750,19 @@ export async function drawMap(
                 // d3.select(this)
                 // .transition()
                 // .attr('stroke-width', 5);
+                onSelectObject('relation');
                 if (selectPathNow === ''){
                     d3.select(document.getElementById('PathMenu'))
                     .style("left", (d3.event.pageX + 20) + 'px')
                     .style("top", (d3.event.pageY + 20)+ 'px');
                 }
             })
-            // .on('mouseout', function(){
-            //     d3.select(this)
-            //     .transition()
-            //     .attr('stroke-width', 2);
-            // })
+            .on('mouseout', function(){
+                // d3.select(this)
+                // .transition()
+                // .attr('stroke-width', 2);
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
                 // // console.log("This is PathMenu Test!", d.start)
@@ -702,7 +787,7 @@ export async function drawMap(
                 // };
                 // checkCloseMenu(2);
                 Target = d;
-                onClickRight(d, 'path');
+                onClickRight(d, 'relation');
             });
 
         // 绘制认知路径
@@ -810,7 +895,7 @@ export async function drawMap(
         let nodePositions = {};
         // 绘制簇内信息
         for (let com of nodes) {
-            // console.log("graph[com.id]", graph[com.id])
+            console.log("graph[com.id]", graph[com.id])
             // 计算簇内布局
             const tmp = calcCircleLayout(
                 {x: com.cx, y: com.cy},
@@ -1010,6 +1095,7 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
+                //可能是这里
                 //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
@@ -1069,17 +1155,19 @@ export async function drawMap(
                     // d3.select(this)
                     // .transition()
                     // .attr('stroke-width', 5);
+                    onSelectObject('relation');
                     if (selectPathNow === ''){
                         d3.select(document.getElementById('PathMenu'))
                         .style("left", (d3.event.pageX + 20) + 'px')
                         .style("top", (d3.event.pageY + 20)+ 'px');
                     }
                 })
-                // .on('mouseout', function(){
-                //     d3.select(this)
-                //     .transition()
-                //     .attr('stroke-width', 2);
-                // })
+                .on('mouseout', function(){
+                    // d3.select(this)
+                    // .transition()
+                    // .attr('stroke-width', 2);
+                    offSelectObject();
+                })
                 .on('contextmenu', (d: any) => {
                     // d3.event.preventDefault();
                     // // console.log("This is PathMenu Test!", d.start)
@@ -1104,10 +1192,10 @@ export async function drawMap(
                     // };
                     // checkCloseMenu(2);
                     Target = d;
-                    onClickRight(d, 'path');
+                    onClickRight(d, 'relation');
                 });
         }
-        // console.log("hahahahah", sequences)
+        console.log("hahahahah", sequences)
         canvas.append('g')
             .attr('id', 'comText')
             .selectAll('text')
@@ -1160,6 +1248,17 @@ export async function drawMap(
             .selectAll('circle')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
+            .on('mouseover', function(){
+                if (selectNow === ''){
+                    d3.select(document.getElementById('ListMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
+                onSelectObject('topic');
+            })
+            .on('mouseout', function(){
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 Target = d;
                 onClickRight(d, 'topic');
@@ -1202,6 +1301,17 @@ export async function drawMap(
             .selectAll('text')
             .attr('cursor', 'pointer')
             .on('click', (d: any) => clickNode(d, com))
+            .on('mouseover', function(){
+                if (selectNow === ''){
+                    d3.select(document.getElementById('ListMenu'))
+                    .style("left", (d3.event.pageX + 20) + 'px')
+                    .style("top", (d3.event.pageY + 20)+ 'px');
+                }
+                onSelectObject('topic');
+            })
+            .on('mouseout', function(){
+                offSelectObject();
+            })
             .on('contextmenu', (d: any) => {
                 // d3.event.preventDefault();
 
@@ -1255,12 +1365,12 @@ export async function drawMap(
                 svg.style.visibility='visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu") 
+                console.log("shuchu")
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
             },600);
-                
+
 
         }
         else if (state === '2'){
@@ -1274,7 +1384,7 @@ export async function drawMap(
                 svg.style.visibility='visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu") 
+                console.log("shuchu")
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
@@ -1293,7 +1403,7 @@ export async function drawMap(
                 //treeSvg.style.visibility = 'visible';
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
-                console.log("shuchu") 
+                console.log("shuchu")
                 canvas.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
@@ -1525,8 +1635,8 @@ export async function drawMap(
             }
 
             localStorage.removeItem('state');
-            localStorage.setItem('nodeId',id);  
-            
+            localStorage.setItem('nodeId',id);
+
             // svg.style.visibility = 'visible';
         }
 
@@ -1562,7 +1672,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1609,8 +1719,7 @@ export async function drawMap(
                     .attr('stroke-width', 2)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    // .style('visibility', invis ? 'hidden' : 'visible')
-                    // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                     ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
@@ -1688,8 +1797,8 @@ export async function drawMap(
             }
             //存储点击状态
             localStorage.setItem('state','1');
-            localStorage.setItem('nodeId',id);   
-            
+            localStorage.setItem('nodeId',id);
+
             if(invis === true){
                 svg.style.visibility = 'hidden';
                 d3.selectAll('path')
@@ -1701,7 +1810,7 @@ export async function drawMap(
                 // .selectAll('path')
                 // .display('none')
                 invis = false;
-                
+
             }
             // svg.style.visibility = 'visible';
         }
@@ -1828,7 +1937,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', 'inline');
-
+                    //buzhidaozheli
 
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
@@ -1962,7 +2071,7 @@ export async function drawMap(
             }
             //存储点击状态
             localStorage.setItem('state','2');
-            localStorage.setItem('nodeId',id); 
+            localStorage.setItem('nodeId',id);
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
@@ -1984,16 +2093,6 @@ export async function drawMap(
             treeSvg.style.visibility = 'hidden';
             zoom.topicId = d.id;
             zoom.com = com.id;
-            // if (localStorage.getItem('flag')){
-            //     var d2 = d1;
-            //     var com2 = com1;
-            //     localStorage.setItem("d2",d2);
-            //     localStorage.setItem("com2",com2);
-            // }
-            // var d1 = JSON.stringify(d);
-            // var com1 = JSON.stringify(com);
-            // localStorage.setItem("d1",d1);
-            // localStorage.setItem("com1",com1);
             if (d.id === -1) {
                 // 默认状态下点击知识主题直接进入第二层
                 comSecond(com.id);
@@ -2010,12 +2109,10 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    //布局二切换到分面树
                     nodeFirst(d.id, com);
                     layer = 3;
                     break;
                 case 3:
-                    //分面树之间切换
                     nodeFirst(d.id, com);
                     break;
             }
@@ -2172,9 +2269,10 @@ export async function drawMap(
                     else {
                         treeSvg.style.visibility = 'visible';
                     }
+
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
-                            drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd,FacetEdit);
+                            drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd, MenuDisplay);
                         }).catch(err => console.log(err))
                     }
                     const es = calcEdgeWithSelectedNode(
@@ -2252,8 +2350,8 @@ export async function drawMap(
             //存储最后一次点击状态
             localStorage.setItem('state','3');
             let nodeCom = JSON.stringify(c);
-            localStorage.setItem('nodeId',id); 
-            localStorage.setItem('nodeCom',nodeCom); 
+            localStorage.setItem('nodeId',id);
+            localStorage.setItem('nodeCom',nodeCom);
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
@@ -2267,14 +2365,10 @@ export async function drawMap(
         }
 
         //@ts-ignore
-        function clickRelation() {
-
-        }
+        function clickRelation() {}
 
         //@ts-ignore
-        function clickCanvas() {
-
-        }
+        function clickCanvas() {}
     }
 }
 
