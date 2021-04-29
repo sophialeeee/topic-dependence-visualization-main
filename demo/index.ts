@@ -5,10 +5,10 @@ import {drawMap} from "../src/draw-map";
 import {gaozhongshuxue} from "../gaozhongshuxue";
 // import {drawTree} from './module/facetTree';
 
-// const domainName = '八年级生物';
+const domainName = '八年级生物';
 // const domainName = '八年级英语';
 
-const domainName = '数据结构';
+// const domainName = '眼科';
 // const learningPath = [-1,104882,104890,104894,104898,104941];
 const learningPath = [];
 const treesvg = document.getElementById('tree');
