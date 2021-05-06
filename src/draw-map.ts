@@ -789,7 +789,7 @@ export async function drawMap(
             .append('path')
             .attr('d', d => link(d.path))
             .attr('stroke', colors[globalSequence0.indexOf(0) % colors.length][8])
-            .attr('stroke-width', 2)
+            .attr('stroke-width', 3)
             .attr('fill', 'none')
             .attr('cursor', 'pointer')
             .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
@@ -808,7 +808,7 @@ export async function drawMap(
             .on('mouseout', function(){
                 // d3.select(this)
                 // .transition()
-                // .attr('stroke-width', 2);
+                // .attr('stroke-width', 3);
                 offSelectObject();
             })
             .on('contextmenu', (d: any) => {
@@ -861,7 +861,7 @@ export async function drawMap(
                     ))
                 })
                 .attr('stroke', '#873800')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .style('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow)');
@@ -1194,7 +1194,7 @@ export async function drawMap(
                 .append('path')
                 .attr('d', d => link(d.path))
                 .attr('stroke', colors[globalSequence.indexOf(com.id) % colors.length][8])
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .attr('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow' + globalSequence.indexOf(com.id) + ')')
@@ -1213,7 +1213,7 @@ export async function drawMap(
                 .on('mouseout', function(){
                     // d3.select(this)
                     // .transition()
-                    // .attr('stroke-width', 2);
+                    // .attr('stroke-width', 3);
                     offSelectObject();
                 })
                 .on('contextmenu', (d: any) => {
@@ -1282,7 +1282,7 @@ export async function drawMap(
                     ))
                 })
                 .attr('stroke', '#873800')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .style('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow)');
@@ -1546,7 +1546,7 @@ export async function drawMap(
                     .transition()
                     .delay(300)
                     .attr('d', d => link(d.path))
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
                     .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
@@ -1703,7 +1703,7 @@ export async function drawMap(
                     .transition()
                     .delay(300)
                     .attr('d', d => link(d.path))
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
                     .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
@@ -1915,7 +1915,7 @@ export async function drawMap(
                         .transition()
                         .delay(300)
                         .attr('d', d => link(d.path))
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 3)
                         .attr('fill', 'none')
                         .attr('display', 'inline');
                     const textElement = document.getElementById(com.id + 'text');
@@ -2003,7 +2003,7 @@ export async function drawMap(
                         )
                     })
                     .attr('stroke', '#873800')
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
@@ -2033,7 +2033,7 @@ export async function drawMap(
                         ))
                     })
                     .attr('stroke', '#873800')
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
@@ -2243,7 +2243,7 @@ export async function drawMap(
                         .append('path')
                         .attr('d', d => link(d))
                         .attr('stroke', '#873800')
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 3)
                         .attr('fill', 'none')
                         .attr('marker-end', 'url(#arrow)');
                     const edgeCrossCom = calcEdgeWithSelectedNodeCrossCom(
