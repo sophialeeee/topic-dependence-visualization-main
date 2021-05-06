@@ -12,7 +12,6 @@ import {
     calcLinkSourceTargetBetweenCircles
 } from "./circle-layout";
 import {geoCircle} from 'd3';
-
 const colors = [];
 
 var Target = null;
@@ -74,9 +73,10 @@ export async function drawMap(
         relationCrossCommunity,
         communityRelation,
     } = mapData;
-
+// MenuDisplay = 'assemble';
+// MenuDisplay = 'knowledge-forest';
     const PathMenuDisplay = MenuDisplay;
-    
+
     if (!document.getElementById('facet-tree-tooltip')) {
         d3.select('body').append('div')
             .attr('id', 'facet-tree-tooltip')
@@ -87,8 +87,13 @@ export async function drawMap(
             .style('background-color', '#ffffb8')
             .style('padding', '1px 3px');
     }
+    if(localStorage.getItem('domain') !== domainName){
+        localStorage.removeItem('state');
+    }
+    localStorage.setItem('domain',domainName);
 
     // console.log('useFacetEdit', useFacetEdit)
+    console.log("statenow",localStorage.getItem('state'));
     function fucCheckLength(strTemp) {
         var i, sum;
         sum = 0;
@@ -272,36 +277,36 @@ export async function drawMap(
         MenuHeight = '80px';
     }
 
-    if (document.getElementById('ListMenu')){
-            d3.select(document.getElementById('ListMenu')).remove()
-        }
-    if (document.getElementById('CompleteName')){
-        d3.select(document.getElementById('CompleteName')).remove()
-    }
-    if (document.getElementById('OptionDelete')){
-        d3.select(document.getElementById('OptionDelete')).remove()
-    }
-    if (document.getElementById('OptionAssemble')){
-        d3.select(document.getElementById('OptionAssemble')).remove()
-    }
-    if (document.getElementById('OptionSelect')){
-        d3.select(document.getElementById('OptionSelect')).remove()
-    }
-    if (document.getElementById('OptionAdd')){
-        d3.select(document.getElementById('OptionAdd')).remove()
-    }
-    if (document.getElementById('PathMenu')){
-        d3.select(document.getElementById('PathMenu')).remove()
-    }
-    if (document.getElementById('CompleteRelation')){
-        d3.select(document.getElementById('CompleteRelation')).remove()
-    }
-    if (document.getElementById('PathDelete')){
-        d3.select(document.getElementById('PathDelete')).remove()
-    }
-    if (document.getElementById('MenuNotion')){
-        d3.select(document.getElementById('MenuNotion')).remove()
-    }
+if(document.getElementById('ListMenu')){
+    d3.select(document.getElementById('ListMenu')).remove()
+    }
+if(document.getElementById('CompleteName')){
+    d3.select(document.getElementById('CompleteName')).remove()
+}
+if(document.getElementById('OptionDelete')){
+d3.select(document.getElementById('OptionDelete')).remove()
+}
+if(document.getElementById('OptionAssemble')){
+d3.select(document.getElementById('OptionAssemble')).remove()
+}
+if(document.getElementById('OptionSelect')){
+d3.select(document.getElementById('OptionSelect')).remove()
+}
+if(document.getElementById('OptionAdd')){
+d3.select(document.getElementById('OptionAdd')).remove()
+}
+if(document.getElementById('PathMenu')){
+d3.select(document.getElementById('PathMenu')).remove()
+}
+if(document.getElementById('CompleteRelation')){
+d3.select(document.getElementById('CompleteRelation')).remove()
+}
+if(document.getElementById('PathDelete')){
+d3.select(document.getElementById('PathDelete')).remove()
+}
+if(document.getElementById('MenuNotion')){
+d3.select(document.getElementById('MenuNotion')).remove()
+}
     if (!document.getElementById('ListMenu') && ['knowledge-forest', 'assemble', 'relation'].indexOf(MenuDisplay) >=0) {
         d3.select('body').append('div')
             .attr('id', 'ListMenu')
@@ -323,6 +328,7 @@ export async function drawMap(
                 optionNow = '';
                 checkCloseMenu(1);
             });
+
 
         d3.select(document.getElementById('ListMenu'))
             .append('div')
@@ -1143,8 +1149,6 @@ export async function drawMap(
                         return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
                     }
                 })
-                //可能是这里
-                //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
                 .attr('y', d => {
                     const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
                     if (tmp > 24) {
@@ -1400,6 +1404,63 @@ export async function drawMap(
                 // checkCloseMenu(1);
             });
         }
+        var state =localStorage.getItem('state')
+        var invis = false;
+        if (state === '1'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            // treeSvg.style.visibility = 'hidden';
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comFirst(id);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
+                
+
+        }
+        else if (state === '2'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            // treeSvg.style.visibility = 'hidden';
+            let id = parseInt(localStorage.getItem('nodeId'));
+            comSecond(id);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
+        }
+        else if (state === '3'){
+            invis = true;
+            svg.style.visibility = 'hidden';
+            treeSvg.style.visibility = 'hidden';
+            let id = parseInt(localStorage.getItem('nodeId'));
+            let com = JSON.parse(localStorage.getItem('nodeCom'));
+            nodeFirst(id,com);
+            // svg.style.visibility = 'visible';
+            setTimeout(function(){
+                svg.style.visibility='visible';
+                //treeSvg.style.visibility = 'visible';
+                canvas.selectAll('path')
+                .style('visibility', 'visible');
+                console.log("shuchu") 
+                canvas.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'visible');
+            },600);
+        }
         // 下面这个是点击整个大圆时的交互
         canvas.select('#com')
             .selectAll('circle')
@@ -1425,7 +1486,6 @@ export async function drawMap(
             // 判断在哪一层
             // 第0层是知识簇的一级状态
             // 增加恢复初始状态的交互
-
             switch (layer) {
                 case 0:
                     comFirst(d.id);
@@ -1501,7 +1561,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1513,7 +1573,8 @@ export async function drawMap(
                     return d.cy + d.r + 24;
                 })
                 .attr('font-size', 14)
-                .attr('display', 'inline');
+                .attr('display', 'inline')
+                .text(d =>topics[sequences[d.id][0]]);
             for (let com of nodes) {
                 const tmp = calcCircleLayout(
                     {x: com.cx, y: com.cy},
@@ -1625,6 +1686,11 @@ export async function drawMap(
                         ))
                     });
             }
+
+            localStorage.removeItem('state');
+            localStorage.setItem('nodeId',id);  
+            
+            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1659,7 +1725,7 @@ export async function drawMap(
                 .delay(300)
                 .attr('d', d => link(d.path))
                 .attr('display', 'inline')
-                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
+                // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible');
             canvas.select('#comText')
                 .selectAll('text')
                 .data(nodes)
@@ -1706,7 +1772,8 @@ export async function drawMap(
                     .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
-                    .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                    // .style('visibility', invis ? 'hidden' : 'visible')
+                    // .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
                     ;
                 const textElement = document.getElementById(com.id + 'text');
                 d3.select(textElement)
@@ -1782,6 +1849,24 @@ export async function drawMap(
                         ))
                     });
             }
+            //存储点击状态
+            localStorage.setItem('state','1');
+            localStorage.setItem('nodeId',id);   
+            
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                // canvas.select('com2com')
+                // .selectAll('path')
+                // .display('none')
+                invis = false;
+                
+            }
+            // svg.style.visibility = 'visible';
         }
 
         /**
@@ -1906,7 +1991,7 @@ export async function drawMap(
                         .attr('cy', d => d.cy)
                         .attr('id', d => d.id)
                         .attr('display', 'inline');
-                    //buzhidaozheli
+
 
                     const edgeElement = document.getElementById(com.id + 'edges');
                     d3.select(edgeElement)
@@ -2038,6 +2123,19 @@ export async function drawMap(
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
             }
+            //存储点击状态
+            localStorage.setItem('state','2');
+            localStorage.setItem('nodeId',id); 
+            // svg.style.visibility = 'visible';
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                invis = false;
+            }
         }
 
         //@ts-ignore
@@ -2065,11 +2163,15 @@ export async function drawMap(
                     layer = 2;
                     break;
                 case 2:
-                    nodeFirst(d.id, com);
-                    layer = 3;
+                    if (MenuDisplay !== 'assemble')
+                    {nodeFirst(d.id, com);}
+                    else
+                    {layer = 3;}
+                    
                     break;
                 case 3:
-                    nodeFirst(d.id, com);
+                    if (MenuDisplay !== 'assemble')
+                    {nodeFirst(d.id, com);}
                     break;
             }
             clickTopic(d.id, topics[d.id]);
@@ -2220,8 +2322,11 @@ export async function drawMap(
                     treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
                     treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
                     treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
-
-                    treeSvg.style.visibility = 'visible';
+                    if (invis){
+                    setTimeout(function(){treeSvg.style.visibility = 'visible';},600)}
+                    else {
+                        treeSvg.style.visibility = 'visible';
+                    }
                     if (id !== -1 && topics[id]) {
                         axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
                             drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd, MenuDisplay);
@@ -2299,7 +2404,21 @@ export async function drawMap(
 
                 }
             }
-
+            //存储最后一次点击状态
+            localStorage.setItem('state','3');
+            let nodeCom = JSON.stringify(c);
+            localStorage.setItem('nodeId',id); 
+            localStorage.setItem('nodeCom',nodeCom); 
+            // svg.style.visibility = 'visible';
+            if(invis === true){
+                svg.style.visibility = 'hidden';
+                d3.selectAll('path')
+                .style('visibility', 'hidden');
+                d3.select('#com2com')
+                .selectAll('path')
+                .style('visibility', 'hidden');
+                invis = false;
+            }
         }
 
         //@ts-ignore

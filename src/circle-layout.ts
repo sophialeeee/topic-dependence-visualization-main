@@ -594,41 +594,95 @@ export function calcLinkSourceTargetBetweenRectAndCircle(
     const width = (r1 - 2 * r2) / 5 * 3;
     const height = (r1 - 2 * r2) / 5 * 4;
     let x1, x2, y1, y2;
+    // if(Math.abs((cy1 - cy2)/(cx1 - cx2))==){
+    //     console.log('')
+
+    // }
+    // console.log("xielv",Math.abs((cy1 - cy2)/(cx1 - cx2)));
+    //向右比较平
     if (cx1 < cx2 && Math.abs((cy1 - cy2)/(cx1 - cx2)) <= 0.8) {
         x1 = cx1 + width;
         y1 = cy1 - (cy1 - cy2) / (cx2 - cx1) * width;
         x2 = cx1 + (cx2 - cx1) / (r1 - r2) * (r1 - 2 * r2);
         y2 = cy1 - (cy1 - cy2) / (r1 - r2) * (r1 - 2 * r2);
+    //向左比较平
     } else if (cx1 > cx2 && Math.abs((cy1 - cy2)/(cx1 - cx2)) <= 0.8) {
         x1 = cx1 - width;
         y1 = cy1 - (cy1 - cy2) / (cx1 - cx2) * width;
         x2 = cx1 - (cx1 - cx2) / (r1 - r2) * (r1 - 2 * r2);
         y2 = cy1 - (cy1 - cy2) / (r1 - r2) * (r1 - 2 * r2);
     } else if (cx1 < cx2 && Math.abs((cy1 - cy2)/(cx1 - cx2)) > 0.8) {
+        //向右上比较斜
         if (cy1 < cy2) {
             y1 = cy1 + height;
             x1 = cx1 + height / (cy2 - cy1) * (cx2 - cx1);
             x2 = cx1 + (cx2 - cx1) / (r1 - r2) * (r1 -2 * r2);
             y2 = cy1 + (cy2 - cy1) / (r1 - r2) * (r1 -2 * r2);
+            console.log("before",x1,y1,x2,y2);
+            if(Math.round(Math.abs((cy1 - cy2)/(cx1 - cx2)))=== 1){
+                let x = x2;
+                let y = y2;
+                x2 = 2*x2 - x1;
+                y2 = 2*y2 - y1;
+                x1 = x;
+                y1 = y;
+            }
+            console.log("after",x1,y1,x2,y2);
+            // x2 = cx1 - (cx2 - cx1) / (r1 - r2) * (r1 -2 * r2);
+            // y2 = cy1 - (cy2 - cy1) / (r1 - r2) * (r1 -2 * r2);
+        //向右下比较斜
         } else {
             y1 = cy1 - height;
             x1 = cx1 + height / (cy1 - cy2) * (cx2 - cx1);
             x2 = cx1 + (cx2 - cx1) / (r1 - r2) * (r1 -2 * r2);
             y2 = cy1 - (cy1 - cy2) / (r1 - r2) * (r1 -2 * r2);
+            if(Math.round(Math.abs((cy1 - cy2)/(cx1 - cx2)))=== 1){
+                let x = x2;
+                let y = y2;
+                x2 = 2*x2 - x1;
+                y2 = 2*y2 - y1;
+                x1 = x;
+                y1 = y;
+            }
+            // x2 = cx1 - (cx2 - cx1) / (r1 - r2) * (r1 -2 * r2);
+            // y2 = cy1 + (cy1 - cy2) / (r1 - r2) * (r1 -2 * r2);
         }
     } else if (cx1 > cx2 && Math.abs((cy1 - cy2)/(cx1 - cx2)) > 0.8) {
+        //向左上比较斜
         if (cy1 < cy2) {
             y1 = cy1 + height;
             x1 = cx1 - height / (cy2 - cy1) * (cx1 - cx2);
             x2 = cx1 - (cx1 - cx2) / (r1 - r2) * (r1 -2 * r2);
             y2 = cy1 + (cy2 - cy1) / (r1 - r2) * (r1 -2 * r2);
+            if(Math.round(Math.abs((cy1 - cy2)/(cx1 - cx2)))=== 1){
+                let x = x2;
+                let y = y2;
+                x2 = 2*x2 - x1;
+                y2 = 2*y2 - y1;
+                x1 = x;
+                y1 = y;
+            }
+            // x2 = cx1 + (cx1 - cx2) / (r1 - r2) * (r1 -2 * r2);
+            // y2 = cy1 - (cy2 - cy1) / (r1 - r2) * (r1 -2 * r2);
+        //向左下比较斜
         } else {
             y1 = cy1 - height;
             x1 = cx1 - height / (cy1 - cy2) * (cx1 - cx2);
             x2 = cx1 - (cx1 - cx2) / (r1 - r2) * (r1 -2 * r2);
             y2 = cy1 - (cy1 - cy2) / (r1 - r2) * (r1 -2 * r2);
+            if(Math.round(Math.abs((cy1 - cy2)/(cx1 - cx2)))=== 1){
+                let x = x2;
+                let y = y2;
+                x2 = 2*x2 - x1;
+                y2 = 2*y2 - y1;
+                x1 = x;
+                y1 = y;
+            }
+            // x2 = cx1 + (cx1 - cx2) / (r1 - r2) * (r1 -2 * r2);
+            // y2 = cy1 - (cy1 - cy2) / (r1 - r2) * (r1 -2 * r2);
         }
     } else {
+        //平的线
         x1 = cx1;
         x2 = cx1;
         if (cy1 < cy2) {
