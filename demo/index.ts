@@ -14,7 +14,7 @@ const svg = document.getElementById('map');
 
 const MenuDisplay = 'knowledge-forest';
 
-axios.get('http://47.95.145.72:80/dependences/?domainName=' + domainName)
+axios.get('http://47.95.145.72:8081/dependences/?domainName=' + domainName + '&?isEnglish=' + false)
     .then(res => {
         console.log("rs",res.data);
         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{
