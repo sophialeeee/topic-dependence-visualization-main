@@ -1399,7 +1399,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
                 console.log("shuchu") 
-                canvas.select('#com2com')
+                d3.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
             },600);
@@ -1418,7 +1418,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
                 console.log("shuchu") 
-                canvas.select('#com2com')
+                d3.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
             },600);
@@ -1437,7 +1437,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 canvas.selectAll('path')
                 .style('visibility', 'visible');
                 console.log("shuchu") 
-                canvas.select('#com2com')
+                d3.select('#com2com')
                 .selectAll('path')
                 .style('visibility', 'visible');
             },600);
@@ -1836,7 +1836,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             
             if(invis === true){
                 svg.style.visibility = 'hidden';
-                d3.selectAll('path')
+                canvas.selectAll('path')
                 .style('visibility', 'hidden');
                 d3.select('#com2com')
                 .selectAll('path')
@@ -2110,7 +2110,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
-                d3.selectAll('path')
+                canvas.selectAll('path')
                 .style('visibility', 'hidden');
                 d3.select('#com2com')
                 .selectAll('path')
@@ -2393,7 +2393,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             // svg.style.visibility = 'visible';
             if(invis === true){
                 svg.style.visibility = 'hidden';
-                d3.selectAll('path')
+                canvas.selectAll('path')
                 .style('visibility', 'hidden');
                 d3.select('#com2com')
                 .selectAll('path')
