@@ -114,11 +114,15 @@ export async function drawMap(
                 if (!optionNow && selectTemp === selectNow){
                     
                     d3.select(document.getElementById("ListMenu"))
-                        .transition().transition()
+                        .transition()
                         .duration(300)
                         .style('width', '0px')
                         .style('height', '0px')
                         .style("opacity", 0);
+                    setTimeout(function(){
+                        d3.select(document.getElementById("ListMenu"))
+                        .style('display', 'none');
+                    },300)
                     selectNow = '';
                     optionNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
@@ -133,11 +137,16 @@ export async function drawMap(
                 if (!optionPathNow && selectTemp === selectPathNow){
                     
                     d3.select(document.getElementById("PathMenu"))
-                        .transition().transition()
+                        .transition()
                         .duration(300)
                         .style('width', '0px')
                         .style('height', '0px')
                         .style("opacity", 0);
+
+                    setTimeout(function(){
+                        d3.select(document.getElementById("PathMenu"))
+                        .style('display', 'none');
+                    },400)
                     selectPathNow = '';
                     // if ((document.getElementById('inputNewTopic') as HTMLInputElement).value){
                     //     (document.getElementById('inputNewTopic') as HTMLInputElement).value = '';
@@ -202,6 +211,8 @@ export async function drawMap(
                 d3.event.preventDefault();
                 const ListMenu = document.getElementById('ListMenu');
                 const CompleteName = document.getElementById('CompleteName');
+                d3.select(ListMenu)
+                    .style('display', 'block');
                 selectNow = target.id;
                 d3.select(ListMenu)
                     .transition()
@@ -229,6 +240,8 @@ export async function drawMap(
                 d3.event.preventDefault();
                 selectPathNow = topics[target.start] + topics[target.end];
                 const PathMenu = document.getElementById('PathMenu');
+                d3.select(PathMenu)
+                    .style('display', 'block');
                 d3.select(PathMenu)
                     .transition()
                     .duration(200)
@@ -583,7 +596,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
     canvas
     .on('click', function (){
         d3.select(document.getElementById("ListMenu"))
-            .transition().transition()
+            .transition()
             .duration(300)
             .style('width', '0px')
             .style('height', '0px')
@@ -591,12 +604,18 @@ d3.select(document.getElementById('MenuNotion')).remove()
         selectNow = '';
         optionNow = '';
         d3.select(document.getElementById("PathMenu"))
-            .transition().transition()
+            .transition()
             .duration(300)
             .style('width', '0px')
             .style('height', '0px')
             .style("opacity", 0);
         selectPathNow = '';
+        setTimeout(function(){
+            d3.select(document.getElementById("ListMenu"))
+            .style('display', 'none');
+            d3.select(document.getElementById("PathMenu"))
+            .style('display', 'none');
+        },500)
     });
     //用来显示画簇的认知关系，鼠标附上去会显示簇
     const divTooltip = d3.select('body').append('div')
@@ -776,7 +795,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             .append('path')
             .attr('d', d => link(d.path))
             .attr('stroke', colors[globalSequence0.indexOf(0) % colors.length][8])
-            .attr('stroke-width', 2)
+            .attr('stroke-width', 3)
             .attr('fill', 'none')
             .attr('cursor', 'pointer')
             .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
@@ -795,7 +814,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             .on('mouseout', function(){
                 // d3.select(this)
                 // .transition()
-                // .attr('stroke-width', 2);
+                // .attr('stroke-width', 3);
                 offSelectObject();
             })
             .on('contextmenu', (d: any) => {
@@ -848,7 +867,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                     ))
                 })
                 .attr('stroke', '#873800')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .style('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow)');
@@ -1179,7 +1198,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 .append('path')
                 .attr('d', d => link(d.path))
                 .attr('stroke', colors[globalSequence.indexOf(com.id) % colors.length][8])
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .attr('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow' + globalSequence.indexOf(com.id) + ')')
@@ -1198,7 +1217,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 .on('mouseout', function(){
                     // d3.select(this)
                     // .transition()
-                    // .attr('stroke-width', 2);
+                    // .attr('stroke-width', 3);
                     offSelectObject();
                 })
                 .on('contextmenu', (d: any) => {
@@ -1267,7 +1286,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                     ))
                 })
                 .attr('stroke', '#873800')
-                .attr('stroke-width', 2)
+                .attr('stroke-width', 3)
                 .attr('fill', 'none')
                 .style('cursor', 'pointer')
                 .attr('marker-end', 'url(#arrow)');
@@ -1588,7 +1607,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                     .transition()
                     .delay(300)
                     .attr('d', d => link(d.path))
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
                     .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
@@ -1750,7 +1769,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                     .transition()
                     .delay(300)
                     .attr('d', d => link(d.path))
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .attr('display', 'inline')
                     // .style('visibility', invis ? 'hidden' : 'visible')
@@ -1981,7 +2000,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                         .transition()
                         .delay(300)
                         .attr('d', d => link(d.path))
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 3)
                         .attr('fill', 'none')
                         .attr('display', 'inline');
                     const textElement = document.getElementById(com.id + 'text');
@@ -2069,7 +2088,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                         )
                     })
                     .attr('stroke', '#873800')
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
@@ -2099,7 +2118,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                         ))
                     })
                     .attr('stroke', '#873800')
-                    .attr('stroke-width', 2)
+                    .attr('stroke-width', 3)
                     .attr('fill', 'none')
                     .style('cursor', 'pointer')
                     .attr('marker-end', 'url(#arrow)');
@@ -2329,7 +2348,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                         .append('path')
                         .attr('d', d => link(d))
                         .attr('stroke', '#873800')
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 3)
                         .attr('fill', 'none')
                         .attr('marker-end', 'url(#arrow)');
                     const edgeCrossCom = calcEdgeWithSelectedNodeCrossCom(
