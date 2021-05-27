@@ -5,7 +5,7 @@ import {drawMap} from "../src/draw-map";
 import {gaozhongshuxue} from "../gaozhongshuxue";
 // import {drawTree} from './module/facetTree';
 
-const domainName = '数据库应用';
+const domainName = '七年级英语';
 // const learningPath = [-1,104882,104890,104894,104898,104941];
 const learningPath = [];
 const treesvg = document.getElementById('tree');
@@ -14,7 +14,7 @@ const svg = document.getElementById('map');
 
 const MenuDisplay = 'knowledge-forest';
 
-axios.get('http://47.95.145.72:8081/dependences/?domainName=' + domainName + '&?isEnglish=' + false)
+axios.get('http://47.95.145.72:8082/dependences/?domainName=' + domainName + '&?isEnglish=' + false)
     .then(res => {
         console.log("rs",res.data);
         drawMap(res.data, svg, treesvg, domainName, learningPath, (topicId, topicName) => {}, clickFacet, ()=>{

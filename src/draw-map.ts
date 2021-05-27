@@ -684,12 +684,11 @@ d3.select(document.getElementById('MenuNotion')).remove()
         // 绘制知识簇
         canvas.append('g')
             .attr('id', 'com')
-            .selectAll('circle')
             .append('circle')
             .attr('r', radius)
             .attr('cx', radiusx)
             .attr('cy', radius)
-            .attr('id', d => 'com' + 0)
+            .attr('id', 'com' + 0)
             .attr('fill', (d, i) => colors[i % colors.length][1]);
         let nodePositions = {};
         // 绘制簇内信息
@@ -700,180 +699,973 @@ d3.select(document.getElementById('MenuNotion')).remove()
             graph[0],
             0
         );
+        const {nodes, edges} = calcCircleLayoutSecondLayer(
+            {x: radiusx, y: radius},
+            radius,
+            communityRelation,
+            globalSequence0,
+            0
+        );
+        canvas.select('#com')
+                .selectAll('circle')
+                .data(nodes)
+                .attr('r', d => d.r)
+                .attr('cx', d => d.cx)
+                .attr('cy', d => d.cy);
+                
+        // // tmp.nodes = nodes;
+        // // tmp.edges = edges;
+        let nodeInCom = {};
+        const sequences = {};
+        for (let com of nodes) {
+            console.log("graph[com.id]", graph[com.id])
+            // 计算簇内布局
+            const tmp = calcCircleLayout(
+                {x: com.cx, y: com.cy},
+                com.r,
+                graph[com.id],
+                com.id === topicId2Community[-1] ? -1 : undefined
+            );
+            for (let node of tmp.nodes) {
+                nodePositions[node.id] = node;
+            }
+            sequences[com.id] = tmp.sequence;
+            canvas.append('g')
+                .attr('id', com.id + 'nodes')
+                .selectAll('circle')
+                .data(tmp.nodes)
+                .enter()
+                .append('circle')
+                .attr('r', d => d.r)
+                .attr('cx', d => d.cx)
+                .attr('cy', d => d.cy)
+                .attr('id', d => d.id)
+                .attr('fill', colors[globalSequence0.indexOf(com.id) % colors.length][6])
+                .on('mouseover', function(d) {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                });
+                
+        
+
+            canvas.append('g')
+                .attr('id', com.id + 'text')
+                .selectAll('text')
+                .data(tmp.nodes)
+                .enter()
+                .append('text')
+                .attr('font-size', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                    if (tmp > 24) {
+                        return 24;
+                    } else {
+                        return tmp;
+                    }
+                })
+                .attr('x', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                    if (tmp > 24) {
+                        return d.cx - 12 * judgementStringLengthWithChinese(topics[d.id]);
+                    } else {
+                        return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
+                    }
+                })
+                .attr('y', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                    if (tmp > 24) {
+                        return d.cy + 12;
+                    } else {
+                        return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                    }
+                })
+                .text(d => {
+                    if (topics[d.id]) {
+                        if (fucCheckLength(topics[d.id]) > 8) {
+                            var strLen = topics[d.id].length;
+                            var newStr = "";
+                            for (var i = 0; i <= strLen; i++) {
+                                var tmpStr = topics[d.id].substr(0, i);
+                                if (fucCheckLength(tmpStr) > 8) {
+                                    newStr += '...';
+                                    break;
+                                } else {
+                                    newStr = tmpStr;
+                                }
+                            }
+                            return newStr;
+
+                        } else {
+                            return topics[d.id];
+                        }
+                    }
+                })
+                .attr('fill', '#ffffff')
+                .attr('cursor', 'pointer')
+                .on('mouseover', function() {
+                    if (selectNow === ''){
+                        d3.select(document.getElementById('ListMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                })
+                .on('mouseout', function() {
+                
+                });
+            canvas.append('g')
+                .attr('id', com.id + 'edges')
+                .selectAll('path')
+                .data(tmp.edges)
+                .enter()
+                .append('path')
+                .attr('d', d => link(d.path))
+                .attr('stroke', colors[globalSequence0.indexOf(com.id) % colors.length][8])
+                .attr('stroke-width', 3)
+                .attr('fill', 'none')
+                .attr('cursor', 'pointer')
+                .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(com.id) + ')')
+                .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+                .on('mouseover', function(){
+                    
+                    onSelectObject('relation');
+                    if (selectPathNow === ''){
+                        d3.select(document.getElementById('PathMenu'))
+                        .style("left", (d3.event.pageX + 20) + 'px')
+                        .style("top", (d3.event.pageY + 20)+ 'px');
+                    }
+                })
+                .on('mouseout', function(){
+                    
+                    offSelectObject();
+                })
+                .on('contextmenu', (d: any) => {
+                   
+                    Target = d;
+                    onClickRight(d, 'relation');
+                });
+        }
+            for (let com of nodes) {
+                    const tmp = calcCircleLayoutWithoutReduceCrossing(
+                        {x: com.cx, y: com.cy},
+                        com.r,
+                        graph[com.id],
+                        sequences[com.id],
+                        undefined
+                    );
+                    for (let node of tmp.nodes) {
+                        nodeInCom[node.id] = node;
+                    }
+                    const nodeElement = document.getElementById(com.id + 'nodes');
+                    d3.select(nodeElement)
+                        .selectAll('circle')
+                        .data(tmp.nodes)
+                        .transition()
+                        .delay(300)
+                        .attr('r', d => d.r)
+                        .attr('cx', d => d.cx)
+                        .attr('cy', d => d.cy)
+                        .attr('id', d => d.id)
+                        .attr('display', 'inline');
+
+
+                    const edgeElement = document.getElementById(com.id + 'edges');
+                    d3.select(edgeElement)
+                        .selectAll('path')
+                        .data(tmp.edges)
+                        .transition()
+                        .delay(300)
+                        .attr('d', d => link(d.path))
+                        .attr('stroke-width', 3)
+                        .attr('fill', 'none')
+                        .attr('display', 'inline');
+                    const textElement = document.getElementById(com.id + 'text');
+                    d3.select(textElement)
+                        .selectAll('text')
+                        .data(tmp.nodes)
+                        .transition()
+                        .delay(300)
+                        .attr('font-size', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return 24;
+                            } else {
+                                return tmp;
+                            }
+                        })
+                        .attr('x', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            return d.cx - judgementStringLengthWithChinese(topics[d.id]) * (tmp > 24 ? 12 : tmp / 2);
+                        })
+                        .attr('y', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return d.cy + 12;
+                            } else {
+                                return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                            }
+                        })
+
+
+                        .text(d => {
+                            if (topics[d.id]) {
+                                if (fucCheckLength(topics[d.id]) > 8) {
+                                    var strLen = topics[d.id].length;
+                                    var newStr = "";
+                                    for (var i = 0; i <= strLen; i++) {
+                                        var tmpStr = topics[d.id].substr(0, i);
+                                        if (fucCheckLength(tmpStr) > 8) {
+                                            newStr += '...';
+                                            break;
+                                        } else {
+                                            newStr = tmpStr;
+                                        }
+                                    }
+                                    return newStr;
+
+                                } else {
+                                    return topics[d.id];
+                                }
+                            }
+                        })
+                        .attr('fill', '#ffffff')
+                        .attr('display', 'inline');
+
+                
+            }
+            // 绘制认知路径
+            if (learningPath.length !== 0) {
+                let path2com = learningPath.map(x => topicId2Community[x]);
+                let comPaths = [];
+                for (let i = 0; i < path2com.length - 1; i++) {
+                    comPaths.push([path2com[i], path2com[i + 1]]);
+                }
+                comPaths = comPaths.filter(x => x[0] !== x[1]);
+                canvas.select('#learningPaths')
+                    .style('visibility', 'hidden');
+                canvas.append('g')
+                    .attr('id', 'comPaths')
+                    .selectAll('path')
+                    .data(comPaths)
+                    .enter()
+                    .append('path')
+                    .transition()
+                    .delay(300)
+                    .attr('d', d => {
+                        return link(
+                            calcLinkSourceTargetBetweenCircles(
+                                nodes.filter(com => com.id === d[0])[0].cx,
+                                nodes.filter(com => com.id === d[0])[0].cy,
+                                nodes.filter(com => com.id === d[0])[0].r,
+                                nodes.filter(com => com.id === d[1])[0].cx,
+                                nodes.filter(com => com.id === d[1])[0].cy,
+                                nodes.filter(com => com.id === d[1])[0].r,
+                            )
+                        )
+                    })
+                    .attr('stroke', '#873800')
+                    .attr('stroke-width', 3)
+                    .attr('fill', 'none')
+                    .style('cursor', 'pointer')
+                    .attr('marker-end', 'url(#arrow)');
+                // 绘制簇内认知路径
+                let paths = [];
+                for (let i = 0; i < learningPath.length - 1; i++) {
+                    if (Object.keys(nodeInCom).map(x => parseInt(x)).indexOf(learningPath[i]) !== -1 && Object.keys(nodeInCom).map(x => parseInt(x)).indexOf(learningPath[i + 1]) !== -1) {
+                        paths.push([learningPath[i], learningPath[i + 1]]);
+                    }
+                }
+                canvas.append('g')
+                    .attr('id', 'inComPaths')
+                    .selectAll('path')
+                    .data(paths)
+                    .enter()
+                    .append('path')
+                    .attr('d', d => {
+                        return link(calcLinkSourceTargetBetweenCircles(
+                            nodeInCom[d[0]].cx,
+                            nodeInCom[d[0]].cy,
+                            nodeInCom[d[0]].r,
+                            nodeInCom[d[1]].cx,
+                            nodeInCom[d[1]].cy,
+                            nodeInCom[d[1]].r,
+                        ))
+                    })
+                    .attr('stroke', '#873800')
+                    .attr('stroke-width', 3)
+                    .attr('fill', 'none')
+                    .style('cursor', 'pointer')
+                    .attr('marker-end', 'url(#arrow)');
+            }
         for (let node of tmp.nodes) {
             nodePositions[node.id] = node;
         }
         sequences0[0] = tmp.sequence;
 
-        canvas.append('g')
-            .attr('id', 0 + 'nodes')
-            .selectAll('circle')
-            .data(tmp.nodes)
-            .enter()
-            .append('circle')
-            .attr('r', d => d.r)
-            .attr('cx', d => d.cx)
-            .attr('cy', d => d.cy)
-            .attr('id', d => d.id)
-            .attr('fill', colors[globalSequence0.indexOf(0) % colors.length][6])
-            .on('mouseover', d => {
+        const cElememt = document.getElementById('com')
+        d3.select(cElememt)
+        .selectAll('circle')
+        .attr('cursor','pointer')
+        .on('dblclick',nodeBeginOnly);
 
-                const divTooltip = document.getElementById('facet-tree-tooltip');
-                d3.select(divTooltip)
-                    .transition()
-                    .duration(200)
-                    .style("opacity", .9);
-                d3.select(divTooltip).html(topics[d.id])
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
-            })
-            .on("mouseout", function (d) {
-                const divTooltip = document.getElementById('facet-tree-tooltip');
-                d3.select(divTooltip).transition().transition()
-                    .duration(500)
-                    .style("opacity", 0);
-            });
-        canvas.append('g')
-            .attr('id', 0 + 'text')
-            .selectAll('text')
-            .data(tmp.nodes)
-            .enter()
-            .append('text')
-            .attr('font-size', d => {
-                const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
-                if (tmp > 24) {
-                    return 24;
-                } else {
-                    return tmp;
-                }
-            })
-            .attr('x', d => {
-                const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
-                if (tmp > 24) {
-                    return d.cx - 12 * judgementStringLengthWithChinese(topics[d.id]);
-                } else {
-                    return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
-                }
-            })
-            //.attr('y', d => d.cy + (d.r - 4) / judgementStringLengthWithChinese(topics[d.id]))
-            .attr('y', d => {
-                const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
-                if (tmp > 24) {
-                    return d.cy + 12;
-                } else {
-                    return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
-                }
-            })
-            .text(d => {
-                if (topics[d.id]) {
-                    if (fucCheckLength(topics[d.id]) > 8) {
-                        var strLen = topics[d.id].length;
-                        var newStr = "";
-                        for (var i = 0; i <= strLen; i++) {
-                            var tmpStr = topics[d.id].substr(0, i);
-                            if (fucCheckLength(tmpStr) > 8) {
-                                newStr += '...';
-                                break;
-                            } else {
-                                newStr = tmpStr;
-                            }
-                        }
-                        return newStr;
+        const nElement = document.getElementById(0 + 'nodes');
+        // 给这个元素加上两个监听
+        d3.select(nElement)
+        .selectAll('circle')
+        .attr('cursor', 'pointer')
+        .on('click', (d: any) => clickNodeOnly(d))
+        .on('mouseover', function(){
+            if (selectNow === ''){
+                d3.select(document.getElementById('ListMenu'))
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            }
+            onSelectObject('topic');
+        })
+        .on('mouseout', function(){
+            offSelectObject();
+        })
+        .on('contextmenu', (d: any) => {
+            Target = d;
+            onClickRight(d, 'topic');
+            
+        });
 
+        const tElement = document.getElementById(0 + 'text');
+        d3.select(tElement)
+        .selectAll('text')
+        .attr('cursor', 'pointer')
+        .on('click', (d: any) => clickNodeOnly(d))
+        .on('mouseover', function(){
+            if (selectNow === ''){
+                d3.select(document.getElementById('ListMenu'))
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            }
+            onSelectObject('topic');
+        })
+        .on('mouseout', function(){
+            offSelectObject();
+        })
+        .on('contextmenu', (d: any) => {
+            
+            Target = d;
+            onClickRight(d, 'topic');
+            
+        });
+        //@ts-ignore
+        function clickNodeOnly(d: any){
+            d3.select('#edgeWithTopicInCom').remove();
+            d3.select('#edgeWithTopicCrossCom').remove();
+            d3.select('#comPaths').remove();
+            d3.select('#inComPaths').remove();
+            treeSvg.style.visibility = 'hidden';
+            zoom.topicId = d.id;
+            zoom.com = 0;
+            if (d.id === -1) {
+                // 默认状态下点击知识主题直接进入第二层
+                nodeFirstOnly(d.id);
+                var id = d.id
+                return;
+            }
+            else if(id === d.id) {
+                nodeFirstOnly(d.id);
+            }
+            else {
+                // nodeBeginOnly();
+                nodeFirstOnly(d.id);
+            }
+            
+            clickTopic(d.id, topics[d.id]);
+        }
+        //@ts-ignore
+        function nodeFirstOnly(id){
+            d3.select('#edgeWithTopicInCom').remove();
+            d3.select('#edgeWithTopicCrossCom').remove();
+            d3.select('#comPaths').remove();
+            d3.select('#inComPaths').remove();
+            treeSvg.style.visibility = 'hidden';
+            const {nodes, edges} = calcCircleLayoutSecondLayer(
+                {x: radiusx, y: radius},
+                radius,
+                communityRelation,
+                globalSequence0,
+                0
+            );
+            console.log("clicknode");
+            canvas.select('#com')
+                .selectAll('circle')
+                .data(nodes)
+                .transition()
+                .delay(300)
+                .attr('r', d => d.r)
+                .attr('cx', d => d.cx)
+                .attr('cy', d => d.cy);
+            canvas.select('#com2com')
+                .selectAll('path')
+                .attr('display', 'none');
+            canvas.select('#comText')
+                .selectAll('text')
+                .data(nodes)
+                .transition()
+                .delay(300)
+                .attr('x', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[sequences[d.id][0]]);
+                    return d.cx - judgementStringLengthWithChinese(topics[sequences[d.id][0]]) * (tmp > 24 ? 12 : tmp / 2);
+                })
+                .attr('y', d => {
+                    const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[sequences[d.id][0]]);
+                    if (tmp > 24) {
+                        return d.cy + 12;
                     } else {
-                        return topics[d.id];
+                        return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[sequences[d.id][0]]);
+                    }
+                })
+                .attr('font-size', d => {
+                    if (d.id === 0) {
+                        return 0;
+                    } else {
+                        const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[sequences[d.id][0]]);
+                        if (tmp > 24) {
+                            return 24;
+                        } else {
+                            return tmp;
+                        }
+                    }
+                });
+            for (let com of nodes) {
+                if (com.id !== 0) {
+                    const nodeElement = document.getElementById(com.id + 'nodes');
+                    d3.select(nodeElement)
+                        .selectAll('circle')
+                        .attr('display', 'none');
+                    const edgeElement = document.getElementById(com.id + 'edges');
+                    d3.select(edgeElement)
+                        .selectAll('path')
+                        .attr('display', 'none');
+                    const textElement = document.getElementById(com.id + 'text');
+                    d3.select(textElement)
+                        .selectAll('text')
+                        .attr('display', 'none');
+                } else {
+                    const tmp = calcCircleLayoutSecondLayer(
+                        {x: com.cx, y: com.cy},
+                        com.r,
+                        graph[com.id],
+                        sequences[com.id],
+                        id
+                    );
+                    const nodeElement = document.getElementById(com.id + 'nodes');
+                    d3.select(nodeElement)
+                        .selectAll('circle')
+                        .data(tmp.nodes)
+                        .attr('r', d => d.r)
+                        .attr('cx', d => d.cx)
+                        .attr('cy', d => d.cy)
+                        .attr('id', d => d.id)
+                        .attr('display', d => d.id === id ? 'none' : 'inline');
+
+                    const edgeElement = document.getElementById(com.id + 'edges');
+                    d3.select(edgeElement)
+                        .selectAll('path')
+                        .attr('display', 'none');
+                    const textElement = document.getElementById(com.id + 'text');
+                    d3.select(textElement)
+                        .selectAll('text')
+                        .data(tmp.nodes)
+                        .attr('font-size', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return 24;
+                            } else {
+                                return tmp;
+                            }
+                        })
+                        .attr('x', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            return d.cx - judgementStringLengthWithChinese(topics[d.id]) * (tmp > 24 ? 12 : tmp / 2);
+                        })
+                        .attr('y', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return d.cy + 12;
+                            } else {
+                                return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                            }
+                        })
+                        //.text(d => topics[d.id])
+                        .text(d => {
+                            if (topics[d.id]) {
+                                if (fucCheckLength(topics[d.id]) > 8) {
+                                    var strLen = topics[d.id].length;
+                                    var newStr = "";
+                                    for (var i = 0; i <= strLen; i++) {
+                                        var tmpStr = topics[d.id].substr(0, i);
+                                        if (fucCheckLength(tmpStr) > 8) {
+                                            newStr += '...';
+                                            break;
+                                        } else {
+                                            newStr = tmpStr;
+                                        }
+                                    }
+                                    return newStr;
+
+                                } else {
+                                    return topics[d.id];
+                                }
+                            }
+                        })
+                        .attr('fill', '#ffffff')
+                        .attr('display', d => d.id === id ? 'none' : 'inline');
+
+                    const count = sequences[com.id].length;
+                    const r = 0.4 * com.r * Math.sin(Math.PI / (count + 1)) / (1 + Math.sin(Math.PI / (count + 1)));
+                    treeSvg.style.width = (2 * com.r - 4 * r) / 5 * 3 + 'px';
+                    treeSvg.style.height = (2 * com.r - 4 * r) / 5 * 4 + 'px';
+                    treeSvg.style.left = (svg.clientWidth / 2 - (com.r - 2 * r) / 5 * 3) + 'px';
+                    treeSvg.style.top = (svg.clientHeight / 2 - (com.r - 2 * r) / 5 * 4) + 'px';
+                    if (invis){
+                    setTimeout(function(){treeSvg.style.visibility = 'visible';},600)}
+                    else {
+                        treeSvg.style.visibility = 'visible';
+                    }
+                    if (id !== -1 && topics[id]) {
+                        axios.post('http://zscl.xjtudlc.com:8083/topic/getCompleteTopicByTopicName?topicName=' + encodeURIComponent(topics[id]) + '&hasFragment=emptyAssembleContent').then(res => {
+                            drawTreeNumber(treeSvg, res.data.data, clickFacet,onClickBranch,clickBranchAdd, MenuDisplay);
+                        }).catch(err => console.log(err))
+                    }
+                    const es = calcEdgeWithSelectedNode(
+                        {x: com.cx, y: com.cy},
+                        com.r,
+                        graph[com.id],
+                        tmp.nodes,
+                        id,
+                    );
+                    // 焦点知识主题相关认知关系
+                    canvas.append('g')
+                        .attr('id', 'edgeWithTopicInCom')
+                        .selectAll('path')
+                        .data(es)
+                        .enter()
+                        .append('path')
+                        .attr('d', d => link(d))
+                        .attr('stroke', '#873800')
+                        .attr('stroke-width', 3)
+                        .attr('fill', 'none')
+                        .attr('marker-end', 'url(#arrow)');
+                    const edgeCrossCom = calcEdgeWithSelectedNodeCrossCom(
+                        {x: com.cx, y: com.cy},
+                        com.r,
+                        id,
+                        relationCrossCommunity,
+                        topicId2Community,
+                        nodes
+                    );
+                    canvas.append('g')
+                        .attr('id', 'edgeWithTopicCrossCom')
+                        .selectAll('path')
+                        .data(edgeCrossCom)
+                        .enter()
+                        .append('path')
+                        .attr('d', d => link(d.path))
+                        .attr('stroke', '#873800')
+                        .attr('stroke-width', 4)
+                        .attr('fill', 'none')
+                        .style('cursor', 'pointer')
+                        .on('mouseover', d => {
+                            let topic = '';
+                            for (let topicId of d.topics) {
+                                topic += topics[topicId] + ' ';
+                            }
+                            divTooltip.transition()
+                                .duration(200)
+                                .style("opacity", .9);
+                            divTooltip.html(topic.trim())
+                                .style("left", (d3.event.pageX) + "px")
+                                .style("top", (d3.event.pageY - 28) + "px");
+                        })
+                        .on("mouseout", function (d) {
+                            divTooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        })
+                        .on('click', d => {
+                            divTooltip.transition()
+                                .duration(500)
+                                .style("opacity", 0);
+                        })
+                        .attr('marker-end', 'url(#arrow)');
+
+                }
+            }
+        }
+        //@ts-ignore
+        function nodeBeginOnly(){
+      
+        console.log("neginnnnn");
+        // 绘制簇内信息
+        d3.select('#edgeWithTopicInCom').remove();
+        d3.select('#edgeWithTopicCrossCom').remove();
+        d3.select('#comPaths').remove();
+        d3.select('#inComPaths').remove();
+        treeSvg.style.visibility = 'hidden';
+        const tmp = calcCircleLayout(
+            {x: radiusx, y: radius},
+            radius,
+            graph[0],
+            0
+        );
+        const {nodes, edges} = calcCircleLayoutSecondLayer(
+            {x: radiusx, y: radius},
+            radius,
+            communityRelation,
+            globalSequence0,
+            0
+        );
+        canvas.select('#com')
+                .selectAll('circle')
+                .data(nodes)
+                .attr('r', d => d.r)
+                .attr('cx', d => d.cx)
+                .attr('cy', d => d.cy);
+           
+        let nodeInCom = {};
+        const sequences = {};
+        for (let com of nodes) {
+            console.log("graph[com.id]", graph[com.id])
+            // 计算簇内布局
+            const tmp = calcCircleLayout(
+                {x: com.cx, y: com.cy},
+                com.r,
+                graph[com.id],
+                com.id === topicId2Community[-1] ? -1 : undefined
+            );
+            for (let node of tmp.nodes) {
+                nodePositions[node.id] = node;
+            }
+            sequences[com.id] = tmp.sequence;
+            // canvas.append('g')
+            //     .attr('id', com.id + 'nodes')
+            //     .selectAll('circle')
+            //     .data(tmp.nodes)
+            //     .enter()
+            //     .append('circle')
+            //     .attr('r', d => d.r)
+            //     .attr('cx', d => d.cx)
+            //     .attr('cy', d => d.cy)
+            //     .attr('id', d => d.id)
+            //     .attr('fill', colors[globalSequence0.indexOf(com.id) % colors.length][6])
+            //     .on('mouseover', function(d) {
+            //         if (selectNow === ''){
+            //             d3.select(document.getElementById('ListMenu'))
+            //             .style("left", (d3.event.pageX + 20) + 'px')
+            //             .style("top", (d3.event.pageY + 20)+ 'px');
+            //         }
+            //     });
+                
+        
+
+            // canvas.append('g')
+            //     .attr('id', com.id + 'text')
+            //     .selectAll('text')
+            //     .data(tmp.nodes)
+            //     .enter()
+            //     .append('text')
+            //     .attr('font-size', d => {
+            //         const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+            //         if (tmp > 24) {
+            //             return 24;
+            //         } else {
+            //             return tmp;
+            //         }
+            //     })
+            //     .attr('x', d => {
+            //         const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+            //         if (tmp > 24) {
+            //             return d.cx - 12 * judgementStringLengthWithChinese(topics[d.id]);
+            //         } else {
+            //             return d.cx - tmp / 2 * judgementStringLengthWithChinese(topics[d.id]);
+            //         }
+            //     })
+            //     .attr('y', d => {
+            //         const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+            //         if (tmp > 24) {
+            //             return d.cy + 12;
+            //         } else {
+            //             return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+            //         }
+            //     })
+            //     .text(d => {
+            //         if (topics[d.id]) {
+            //             if (fucCheckLength(topics[d.id]) > 8) {
+            //                 var strLen = topics[d.id].length;
+            //                 var newStr = "";
+            //                 for (var i = 0; i <= strLen; i++) {
+            //                     var tmpStr = topics[d.id].substr(0, i);
+            //                     if (fucCheckLength(tmpStr) > 8) {
+            //                         newStr += '...';
+            //                         break;
+            //                     } else {
+            //                         newStr = tmpStr;
+            //                     }
+            //                 }
+            //                 return newStr;
+
+            //             } else {
+            //                 return topics[d.id];
+            //             }
+            //         }
+            //     })
+            //     .attr('fill', '#ffffff')
+            //     .attr('cursor', 'pointer')
+            //     .on('mouseover', function() {
+            //         if (selectNow === ''){
+            //             d3.select(document.getElementById('ListMenu'))
+            //             .style("left", (d3.event.pageX + 20) + 'px')
+            //             .style("top", (d3.event.pageY + 20)+ 'px');
+            //         }
+            //     })
+            //     .on('mouseout', function() {
+                
+            //     });
+            // canvas.append('g')
+            //     .attr('id', com.id + 'edges')
+            //     .selectAll('path')
+            //     .data(tmp.edges)
+            //     .enter()
+            //     .append('path')
+            //     .attr('d', d => link(d.path))
+            //     .attr('stroke', colors[globalSequence0.indexOf(com.id) % colors.length][8])
+            //     .attr('stroke-width', 3)
+            //     .attr('fill', 'none')
+            //     .attr('cursor', 'pointer')
+            //     .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(com.id) + ')')
+            //     .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
+            //     .on('mouseover', function(){
+                    
+            //         onSelectObject('relation');
+            //         if (selectPathNow === ''){
+            //             d3.select(document.getElementById('PathMenu'))
+            //             .style("left", (d3.event.pageX + 20) + 'px')
+            //             .style("top", (d3.event.pageY + 20)+ 'px');
+            //         }
+            //     })
+            //     .on('mouseout', function(){
+                    
+            //         offSelectObject();
+            //     })
+            //     .on('contextmenu', (d: any) => {
+                   
+            //         Target = d;
+            //         onClickRight(d, 'relation');
+            //     });
+        }
+            for (let com of nodes) {
+                    const tmp = calcCircleLayoutWithoutReduceCrossing(
+                        {x: com.cx, y: com.cy},
+                        com.r,
+                        graph[com.id],
+                        sequences[com.id],
+                        undefined
+                    );
+                    for (let node of tmp.nodes) {
+                        nodeInCom[node.id] = node;
+                    }
+                    const nodeElement = document.getElementById(com.id + 'nodes');
+                    d3.select(nodeElement)
+                        .selectAll('circle')
+                        .data(tmp.nodes)
+                        .transition()
+                        .delay(300)
+                        .attr('r', d => d.r)
+                        .attr('cx', d => d.cx)
+                        .attr('cy', d => d.cy)
+                        .attr('id', d => d.id)
+                        .attr('display', 'inline');
+
+
+                    const edgeElement = document.getElementById(com.id + 'edges');
+                    d3.select(edgeElement)
+                        .selectAll('path')
+                        .data(tmp.edges)
+                        .transition()
+                        .delay(300)
+                        .attr('d', d => link(d.path))
+                        .attr('stroke-width', 3)
+                        .attr('fill', 'none')
+                        .attr('display', 'inline');
+                    const textElement = document.getElementById(com.id + 'text');
+                    d3.select(textElement)
+                        .selectAll('text')
+                        .data(tmp.nodes)
+                        .transition()
+                        .delay(300)
+                        .attr('font-size', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return 24;
+                            } else {
+                                return tmp;
+                            }
+                        })
+                        .attr('x', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            return d.cx - judgementStringLengthWithChinese(topics[d.id]) * (tmp > 24 ? 12 : tmp / 2);
+                        })
+                        .attr('y', d => {
+                            const tmp = (d.r * 2 - 4) / judgementStringLengthWithChinese(topics[d.id]);
+                            if (tmp > 24) {
+                                return d.cy + 12;
+                            } else {
+                                return d.cy + (d.r - 2) / judgementStringLengthWithChinese(topics[d.id]);
+                            }
+                        })
+
+
+                        .text(d => {
+                            if (topics[d.id]) {
+                                if (fucCheckLength(topics[d.id]) > 8) {
+                                    var strLen = topics[d.id].length;
+                                    var newStr = "";
+                                    for (var i = 0; i <= strLen; i++) {
+                                        var tmpStr = topics[d.id].substr(0, i);
+                                        if (fucCheckLength(tmpStr) > 8) {
+                                            newStr += '...';
+                                            break;
+                                        } else {
+                                            newStr = tmpStr;
+                                        }
+                                    }
+                                    return newStr;
+
+                                } else {
+                                    return topics[d.id];
+                                }
+                            }
+                        })
+                        .attr('fill', '#ffffff')
+                        .attr('display', 'inline');
+
+                
+            }
+            // 绘制认知路径
+            if (learningPath.length !== 0) {
+                let path2com = learningPath.map(x => topicId2Community[x]);
+                let comPaths = [];
+                for (let i = 0; i < path2com.length - 1; i++) {
+                    comPaths.push([path2com[i], path2com[i + 1]]);
+                }
+                comPaths = comPaths.filter(x => x[0] !== x[1]);
+                canvas.select('#learningPaths')
+                    .style('visibility', 'hidden');
+                canvas.append('g')
+                    .attr('id', 'comPaths')
+                    .selectAll('path')
+                    .data(comPaths)
+                    .enter()
+                    .append('path')
+                    .transition()
+                    .delay(300)
+                    .attr('d', d => {
+                        return link(
+                            calcLinkSourceTargetBetweenCircles(
+                                nodes.filter(com => com.id === d[0])[0].cx,
+                                nodes.filter(com => com.id === d[0])[0].cy,
+                                nodes.filter(com => com.id === d[0])[0].r,
+                                nodes.filter(com => com.id === d[1])[0].cx,
+                                nodes.filter(com => com.id === d[1])[0].cy,
+                                nodes.filter(com => com.id === d[1])[0].r,
+                            )
+                        )
+                    })
+                    .attr('stroke', '#873800')
+                    .attr('stroke-width', 3)
+                    .attr('fill', 'none')
+                    .style('cursor', 'pointer')
+                    .attr('marker-end', 'url(#arrow)');
+                // 绘制簇内认知路径
+                let paths = [];
+                for (let i = 0; i < learningPath.length - 1; i++) {
+                    if (Object.keys(nodeInCom).map(x => parseInt(x)).indexOf(learningPath[i]) !== -1 && Object.keys(nodeInCom).map(x => parseInt(x)).indexOf(learningPath[i + 1]) !== -1) {
+                        paths.push([learningPath[i], learningPath[i + 1]]);
                     }
                 }
-            })
-            .attr('fill', '#ffffff')
-            .attr('cursor', 'pointer');
-        canvas.append('g')
-            .attr('id', 0 + 'edges')
-            .selectAll('path')
-            .data(tmp.edges)
-            .enter()
-            .append('path')
-            .attr('d', d => link(d.path))
-            .attr('stroke', colors[globalSequence0.indexOf(0) % colors.length][8])
-            .attr('stroke-width', 3)
-            .attr('fill', 'none')
-            .attr('cursor', 'pointer')
-            .attr('marker-end', 'url(#arrow' + globalSequence0.indexOf(0) + ')')
-            .style('visibility', learningPath.length !== 0 ? 'hidden' : 'visible')
-            .on('mouseover', function(){
-                // d3.select(this)
-                // .transition()
-                // .attr('stroke-width', 5);
-                onSelectObject('relation');
-                if (selectPathNow === ''){
-                    d3.select(document.getElementById('PathMenu'))
-                    .style("left", (d3.event.pageX + 20) + 'px')
-                    .style("top", (d3.event.pageY + 20)+ 'px');
-                }
-            })
-            .on('mouseout', function(){
-                // d3.select(this)
-                // .transition()
-                // .attr('stroke-width', 3);
-                offSelectObject();
-            })
-            .on('contextmenu', (d: any) => {
-                // d3.event.preventDefault();
-                // // console.log("This is PathMenu Test!", d.start)
-                // selectPathNow = '<b>' + topics[d.start] + '</b><br/>' + '到' + '<br/><b>' + topics[d.end] + '</b>';
-                // // console.log("This is PathMenu Test2!")
-                // const PathMenu = document.getElementById('PathMenu');
-
-                // d3.select(PathMenu)
-                //     .transition()
-                //     // .duration(500)
-                //     .style("opacity", 1)
-                //     .style("left", (d3.event.pageX + 20) + 'px')
-                //     .style("top", (d3.event.pageY + 20)+ 'px')
-                //     ;
-
-                // const PathDelete = document.getElementById('PathDelete');
-                // // const CloseMenu = document.getElementById('CloseMenu');
-                // d3.select(document.getElementById('CompleteRelation')).html(selectPathNow);
-                // PathDelete.onclick = function (){
-                //     console.log("This is the PathDelete function!")
-                //     clickPath(topics[d.start],topics[d.end]);
-                // };
-                // checkCloseMenu(2);
-                Target = d;
-                onClickRight(d, 'relation');
-            });
-
-        // 绘制认知路径
-        if (learningPath.length !== 0) {
-            let paths = [];
-            for (let i = 0; i < learningPath.length - 1; i++) {
-                paths.push([learningPath[i], learningPath[i + 1]]);
+                canvas.append('g')
+                    .attr('id', 'inComPaths')
+                    .selectAll('path')
+                    .data(paths)
+                    .enter()
+                    .append('path')
+                    .attr('d', d => {
+                        return link(calcLinkSourceTargetBetweenCircles(
+                            nodeInCom[d[0]].cx,
+                            nodeInCom[d[0]].cy,
+                            nodeInCom[d[0]].r,
+                            nodeInCom[d[1]].cx,
+                            nodeInCom[d[1]].cy,
+                            nodeInCom[d[1]].r,
+                        ))
+                    })
+                    .attr('stroke', '#873800')
+                    .attr('stroke-width', 3)
+                    .attr('fill', 'none')
+                    .style('cursor', 'pointer')
+                    .attr('marker-end', 'url(#arrow)');
             }
-            canvas.append('g')
-                .attr('id', 'learningPaths')
-                .selectAll('path')
-                .data(paths)
-                .enter()
-                .append('path')
-                .attr('d', d => {
-                    return link(calcLinkSourceTargetBetweenCircles(
-                        nodePositions[d[0]].cx,
-                        nodePositions[d[0]].cy,
-                        nodePositions[d[0]].r,
-                        nodePositions[d[1]].cx,
-                        nodePositions[d[1]].cy,
-                        nodePositions[d[1]].r,
-                    ))
-                })
-                .attr('stroke', '#873800')
-                .attr('stroke-width', 3)
-                .attr('fill', 'none')
-                .style('cursor', 'pointer')
-                .attr('marker-end', 'url(#arrow)');
+        for (let node of tmp.nodes) {
+            nodePositions[node.id] = node;
         }
-    }
+        sequences0[0] = tmp.sequence;
+        const nElement = document.getElementById(0 + 'nodes');
+        // 给这个元素加上两个监听
+        d3.select(nElement)
+        .selectAll('circle')
+        .attr('cursor', 'pointer')
+        .on('click', (d: any) => clickNodeOnly(d))
+        .on('mouseover', function(){
+            if (selectNow === ''){
+                d3.select(document.getElementById('ListMenu'))
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            }
+            onSelectObject('topic');
+        })
+        .on('mouseout', function(){
+            offSelectObject();
+        })
+        .on('contextmenu', (d: any) => {
+            Target = d;
+            onClickRight(d, 'topic');
+            
+        });
 
+        const tElement = document.getElementById(0 + 'text');
+        d3.select(tElement)
+        .selectAll('text')
+        .attr('cursor', 'pointer')
+        .on('click', (d: any) => clickNodeOnly(d))
+        .on('mouseover', function(){
+            if (selectNow === ''){
+                d3.select(document.getElementById('ListMenu'))
+                .style("left", (d3.event.pageX + 20) + 'px')
+                .style("top", (d3.event.pageY + 20)+ 'px');
+            }
+            onSelectObject('topic');
+        })
+        .on('mouseout', function(){
+            offSelectObject();
+        })
+        .on('contextmenu', (d: any) => {
+            
+            Target = d;
+            onClickRight(d, 'topic');
+            
+        });
+        }
+        
+
+    }
 
         // 画外面的大圆
 
@@ -1527,6 +2319,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             }
             zoom.com = d.id;
         }
+    
 
         /**
          * 知识簇初始形态
@@ -1868,6 +2661,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
             }
             // svg.style.visibility = 'visible';
         }
+        
 
         /**
          * 知识簇第二种形态
@@ -2137,6 +2931,7 @@ d3.select(document.getElementById('MenuNotion')).remove()
                 invis = false;
             }
         }
+        
 
         //@ts-ignore
         function clickNode(d: any, com) {
@@ -2430,7 +3225,8 @@ d3.select(document.getElementById('MenuNotion')).remove()
         function clickCanvas() {
 
         }
-    }
+    // }
+}
 }
 
 
